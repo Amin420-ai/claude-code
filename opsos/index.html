@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpsOS - Sistem Operasi Kafe</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>tailwind.config = { darkMode: 'class' };</script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+  </style>
+  <style type="text/tailwindcss">
+    @layer components {
+      .card { @apply bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm; }
+      .bar { @apply flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800; }
+      .lbl { @apply block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1; }
+      .inp { @apply w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-emerald-500; }
+      .btn { @apply font-bold px-3 py-2 rounded-xl text-xs inline-flex items-center justify-center gap-1.5 transition-all active:scale-95; }
+      .btn-ghost { @apply bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700; }
+      .modal { @apply fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4; }
+      .modal-box { @apply bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 max-h-[90vh] overflow-y-auto; }
+      .th { @apply py-2.5 px-3 font-semibold; }
+      .td { @apply py-2.5 px-3; }
+      .tab-on { @apply bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm border border-slate-200 dark:border-slate-700; }
+      .tab-off { @apply text-slate-500 hover:text-slate-800 dark:hover:text-slate-200; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200">
+
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+          <i class="fa-solid fa-cube text-lg"></i>
+        </div>
+        <div>
+          <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">OpsOS</span>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">Sistem Operasi Kafe Setempat</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        <div class="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700">
+          <button id="role-staff-btn" onclick="switchRole('staff')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs transition-all"><i class="fa-solid fa-user-tag text-xs"></i><span>Staf / Kaunter</span></button>
+          <button id="role-admin-btn" onclick="switchRole('admin')" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs transition-all"><i class="fa-solid fa-crown text-xs text-amber-500"></i><span>Pengurus</span></button>
+        </div>
+        <button onclick="openModal('modal-export')" title="Tetapan, Eksport & Sync Google Sheets" class="p-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"><i class="fa-solid fa-gear"></i></button>
+        <button onclick="toggleDarkMode()" title="Tukar Tema" class="p-2 text-slate-600 dark:text-slate-300 hover:text-emerald-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"><i id="theme-icon" class="fa-solid fa-moon"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="bg-emerald-50 dark:bg-emerald-950/40 border-b border-emerald-200 dark:border-emerald-800/60 px-4 py-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between text-xs text-emerald-800 dark:text-emerald-300 gap-2">
+      <div class="flex items-center space-x-2">
+        <span class="flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
+        <span class="font-medium" id="live-datetime">Memuatkan masa...</span>
+        <span class="text-slate-400">|</span>
+        <span id="active-staff-count-banner" class="font-semibold"></span>
+      </div>
+      <button onclick="copyWhatsAppBriefing()" class="inline-flex items-center space-x-1.5 font-bold hover:underline text-emerald-700 dark:text-emerald-400">
+        <i class="fa-brands fa-whatsapp text-sm text-emerald-600"></i><span>Salin Ringkasan Harian ke WhatsApp Group</span>
+      </button>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 flex-1 flex flex-col">
+
+    <div id="admin-tabs-bar" class="mb-6 flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
+      <button onclick="switchTab('csuite')" id="tab-btn-csuite" class="admin-tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"><i class="fa-solid fa-chart-pie text-emerald-600"></i><span>1. Ringkasan & Penasihat</span></button>
+      <button onclick="switchTab('hira')" id="tab-btn-hira" class="admin-tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"><i class="fa-solid fa-users text-indigo-500"></i><span>2. HIRA (Staf & Gaji)</span></button>
+      <button onclick="switchTab('safa')" id="tab-btn-safa" class="admin-tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"><i class="fa-solid fa-receipt text-amber-500"></i><span>3. SAFA (Kewangan)</span></button>
+      <button onclick="switchTab('ara')" id="tab-btn-ara" class="admin-tab-btn flex items-center space-x-2 px-4 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all"><i class="fa-solid fa-bullhorn text-rose-500"></i><span>4. ARA (Pemasaran & Prospek)</span></button>
+    </div>
+
+    <!-- STAFF VIEW -->
+    <div id="view-staff" class="space-y-6 hidden">
+      <div class="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+        <div class="absolute -right-6 -bottom-8 opacity-15 text-9xl"><i class="fa-solid fa-mug-saucer"></i></div>
+        <div class="max-w-xl">
+          <h2 class="text-2xl font-bold">Selamat Bertugas, Pasukan! ☕</h2>
+          <p class="text-emerald-100 text-sm mt-1">Rekod masa masuk/keluar, hantar resit belian tunai kedai, atau semak siapa yang sedang bertugas.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold flex items-center space-x-2"><i class="fa-solid fa-fingerprint text-emerald-600"></i><span>Clock-In / Out</span></h3>
+              <span class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded font-mono" id="clock-live-time">00:00:00</span>
+            </div>
+            <label class="lbl">Pilih Nama Staf</label>
+            <select id="staff-clock-select" class="inp mb-3"></select>
+            <label class="lbl">Syif Semasa</label>
+            <select id="staff-shift-select" class="inp mb-4">
+              <option value="Pagi">Syif Pagi (08:00 - 16:00)</option>
+              <option value="Petang">Syif Petang/Malam (15:00 - 23:00)</option>
+              <option value="Penuh">Syif Penuh (hujung minggu)</option>
+            </select>
+            <p class="text-[11px] text-slate-400 mb-3"><i class="fa-solid fa-circle-info"></i> Lokasi/selfie tidak disahkan dalam versi ini. Masa diambil daripada peranti ini.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="handleStaffPunch('Masuk')" class="btn bg-emerald-600 hover:bg-emerald-700 text-white py-2.5"><i class="fa-solid fa-right-to-bracket"></i><span>Clock In</span></button>
+            <button onclick="handleStaffPunch('Keluar')" class="btn bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 text-white py-2.5"><i class="fa-solid fa-right-from-bracket"></i><span>Clock Out</span></button>
+          </div>
+        </div>
+
+        <div class="card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold flex items-center space-x-2"><i class="fa-solid fa-file-invoice-dollar text-amber-500"></i><span>Tuntutan / Duit Runcit</span></h3>
+              <span class="text-xs bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300 px-2 py-0.5 rounded-full font-medium">Petty Cash</span>
+            </div>
+            <div class="space-y-3">
+              <div><label class="lbl">Barang Dibeli & Vendor</label><input id="staff-claim-desc" type="text" placeholder="Cth: 5x Beg Ais Batu (Pasar Mini)" class="inp"></div>
+              <div class="grid grid-cols-2 gap-2">
+                <div><label class="lbl">Jumlah (RM)</label><input id="staff-claim-amount" type="number" step="0.01" min="0" placeholder="25.50" class="inp font-semibold"></div>
+                <div><label class="lbl">Kategori</label>
+                  <select id="staff-claim-cat" class="inp px-2">
+                    <option value="Bahan Mentah">Bahan Mentah</option>
+                    <option value="Lain-lain">Runcit & Ais</option>
+                    <option value="Peralatan & Servis">Baiki & Servis</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button onclick="handleStaffClaimSubmit()" class="btn w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white py-2.5"><i class="fa-solid fa-paper-plane"></i><span>Hantar Tuntutan</span></button>
+          <p class="text-[11px] text-slate-400 mt-2">Direkod terus ke lejar. Pengurus boleh padam jika tidak sah.</p>
+        </div>
+
+        <div class="card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold flex items-center space-x-2"><i class="fa-solid fa-calendar-day text-indigo-500"></i><span>Staf Hari Ini</span></h3>
+              <span class="text-xs text-slate-500">Live</span>
+            </div>
+            <div id="staff-roster-today" class="space-y-2 max-h-52 overflow-y-auto custom-scrollbar pr-1"></div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-center text-xs text-slate-400">Ada kecemasan? Hubungi pengurus bertugas di WhatsApp.</div>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <div class="mb-4">
+          <h3 class="font-bold flex items-center space-x-2"><i class="fa-solid fa-address-book text-rose-500"></i><span>Borang Pantas Pelanggan (Katering / Acara)</span></h3>
+          <p class="text-xs text-slate-500">Pelanggan walk-in tanya tempahan besar? Simpan nama dan nombor di sini.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <input id="quick-lead-name" type="text" placeholder="Nama Pelanggan" class="inp">
+          <input id="quick-lead-phone" type="tel" placeholder="No. WhatsApp (011...)" class="inp">
+          <input id="quick-lead-service" type="text" placeholder="Minat: Katering Kopi 100 Pax" class="inp">
+          <button onclick="handleQuickLeadAdd()" class="btn bg-rose-600 hover:bg-rose-700 text-white"><i class="fa-solid fa-plus"></i><span>Simpan Lead</span></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 1 -->
+    <div id="tab-csuite" class="space-y-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card">
+          <div class="flex items-center justify-between"><span class="text-xs font-bold uppercase tracking-wider text-slate-500">Jualan Direkod</span><span class="p-2 bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 rounded-xl"><i class="fa-solid fa-cash-register"></i></span></div>
+          <div class="mt-3"><div class="text-2xl font-extrabold" id="metric-monthly-sales"></div><div class="mt-1 text-xs text-slate-500" id="metric-sales-count"></div></div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between"><span class="text-xs font-bold uppercase tracking-wider text-slate-500">Jumlah Perbelanjaan</span><span class="p-2 bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 rounded-xl"><i class="fa-solid fa-receipt"></i></span></div>
+          <div class="mt-3"><div class="text-2xl font-extrabold" id="metric-total-expenses"></div><div class="mt-1 text-xs text-slate-500" id="metric-expense-count"></div></div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between"><span class="text-xs font-bold uppercase tracking-wider text-slate-500">Untung Kasar (Jualan − Belanja)</span><span class="p-2 bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 rounded-xl"><i class="fa-solid fa-chart-line"></i></span></div>
+          <div class="mt-3"><div class="text-2xl font-extrabold" id="metric-net-profit"></div><div class="mt-1 text-xs font-semibold text-slate-600 dark:text-slate-300" id="metric-margin-percent"></div></div>
+        </div>
+        <div class="card">
+          <div class="flex items-center justify-between"><span class="text-xs font-bold uppercase tracking-wider text-slate-500">Anggaran Runway</span><span class="p-2 bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 rounded-xl"><i class="fa-solid fa-shield-halved"></i></span></div>
+          <div class="mt-3"><div class="text-2xl font-extrabold text-amber-600 dark:text-amber-400" id="metric-runway"></div>
+            <div class="mt-1 text-xs text-slate-500">Baki tunai <span id="metric-cash" class="font-semibold"></span> · <button onclick="editCash()" class="text-indigo-500 hover:underline">ubah</button></div></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card lg:col-span-1">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-bold text-sm">Rekod Jualan</h3>
+            <button onclick="openModal('modal-add-sale')" class="btn bg-emerald-600 hover:bg-emerald-700 text-white"><i class="fa-solid fa-plus"></i><span>Tambah Jualan</span></button>
+          </div>
+          <div id="sales-list" class="space-y-1.5 max-h-64 overflow-y-auto custom-scrollbar pr-1 text-xs"></div>
+        </div>
+
+        <div class="lg:col-span-2 bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 text-white rounded-3xl p-6 shadow-xl border border-indigo-500/20">
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-700">
+            <div>
+              <h3 class="text-lg font-bold">Penasihat Operasi</h3>
+              <p class="text-xs text-slate-400">Analisis berdasarkan data anda (peraturan ringkas, bukan AI sebenar).</p>
+            </div>
+            <div class="flex items-center space-x-2 bg-slate-800/80 p-1.5 rounded-2xl border border-slate-700">
+              <button onclick="setAIPersona('cfo')" id="persona-btn-cfo" class="px-3 py-1.5 rounded-xl text-xs font-semibold"><i class="fa-solid fa-vault mr-1"></i> Kewangan</button>
+              <button onclick="setAIPersona('cmo')" id="persona-btn-cmo" class="px-3 py-1.5 rounded-xl text-xs font-semibold"><i class="fa-solid fa-bullhorn mr-1"></i> Pemasaran</button>
+              <button onclick="setAIPersona('chro')" id="persona-btn-chro" class="px-3 py-1.5 rounded-xl text-xs font-semibold"><i class="fa-solid fa-people-group mr-1"></i> Staf</button>
+            </div>
+          </div>
+          <div class="mt-4 bg-slate-950/60 rounded-2xl p-5 border border-slate-800 text-xs sm:text-sm text-slate-200 leading-relaxed space-y-3 min-h-[140px]" id="ai-advice-display"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2 -->
+    <div id="tab-hira" class="space-y-6 hidden">
+      <div class="bar">
+        <div>
+          <h2 class="text-base font-bold flex items-center space-x-2"><i class="fa-solid fa-id-card text-indigo-600"></i><span>Pengurusan Staf (HIRA Lite)</span></h2>
+          <p class="text-xs text-slate-500">Log kehadiran dan anggaran caruman KWSP/SOCSO/EIS.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="openModal('modal-add-staff')" class="btn bg-indigo-600 hover:bg-indigo-700 text-white"><i class="fa-solid fa-user-plus"></i><span>Daftar Staf</span></button>
+          <button onclick="exportTableToCSV('hira-table', 'Rekod_Kehadiran_Staf.csv')" class="btn btn-ghost"><i class="fa-solid fa-download"></i><span>CSV</span></button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card">
+          <h3 class="font-bold text-sm mb-1">Kalkulator Gaji (Anggaran)</h3>
+          <p class="text-xs text-slate-500 mb-3">Untuk pekerja warganegara bawah 60 tahun. Sahkan dengan jadual rasmi KWSP/PERKESO sebelum bayar gaji.</p>
+          <label class="lbl">Pilih Staf</label>
+          <select id="payroll-staff-select" onchange="calculatePayroll()" class="inp text-xs mb-3"></select>
+          <div class="bg-slate-50 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-100 dark:border-slate-800 space-y-2 text-xs">
+            <div class="flex justify-between"><span class="text-slate-500">Gaji Asas:</span><span class="font-semibold" id="pr-basic"></span></div>
+            <div class="flex justify-between text-rose-600 dark:text-rose-400"><span>KWSP Pekerja (11%):</span><span class="font-semibold" id="pr-epf-emp"></span></div>
+            <div class="flex justify-between text-rose-600 dark:text-rose-400"><span>SOCSO 0.5% + EIS 0.2%:</span><span class="font-semibold" id="pr-socso-emp"></span></div>
+            <div class="border-t border-slate-200 dark:border-slate-700 pt-2 flex justify-between font-bold"><span>Gaji Bersih:</span><span class="text-emerald-600 dark:text-emerald-400" id="pr-net"></span></div>
+            <div class="border-t border-dashed border-slate-200 dark:border-slate-700 pt-1.5 flex justify-between text-[11px] text-slate-400"><span id="pr-employer-label">Kos Majikan:</span><span id="pr-employer-cost"></span></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-2 card">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-clock-rotate-left text-indigo-500"></i><span>Log Kehadiran</span></h3>
+            <span class="text-xs text-slate-500 font-mono" id="attendance-total-badge"></span>
+          </div>
+          <div class="overflow-x-auto custom-scrollbar max-h-96">
+            <table class="w-full text-left text-xs" id="hira-table">
+              <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-y border-slate-100 dark:border-slate-800">
+                <tr><th class="th">Nama Staf</th><th class="th">Jawatan</th><th class="th">Jenis</th><th class="th">Masa</th><th class="th">Status</th></tr>
+              </thead>
+              <tbody id="attendance-log-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3 -->
+    <div id="tab-safa" class="space-y-6 hidden">
+      <div class="bar">
+        <div>
+          <h2 class="text-base font-bold flex items-center space-x-2"><i class="fa-solid fa-wallet text-amber-500"></i><span>Buku Tunai (SAFA Lite)</span></h2>
+          <p class="text-xs text-slate-500">Catat perbelanjaan dan simpan gambar rujukan resit.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="openModal('modal-add-expense')" class="btn bg-amber-600 hover:bg-amber-700 text-white"><i class="fa-solid fa-plus"></i><span>Tambah Belanja</span></button>
+          <button onclick="exportTableToCSV('safa-table', 'Buku_Tunai_Belanja_Kafe.csv')" class="btn btn-ghost"><i class="fa-solid fa-download"></i><span>CSV</span></button>
+        </div>
+      </div>
+
+      <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-5 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="flex items-start space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0"><i class="fa-solid fa-receipt text-lg"></i></div>
+          <div>
+            <h3 class="font-bold text-sm">Resit Pantas</h3>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Pilih gambar resit; borang belanja dibuka dengan nama fail. Bacaan OCR automatik belum ada, jadi isi jumlah sendiri.</p>
+          </div>
+        </div>
+        <label class="cursor-pointer btn btn-ghost px-4">
+          <i class="fa-solid fa-camera text-amber-500"></i><span>Pilih Gambar Resit</span>
+          <input type="file" accept="image/*" class="hidden" onchange="handleReceiptPick(event)">
+        </label>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card space-y-4">
+          <h3 class="font-bold text-sm">Pecahan Mengikut Kategori</h3>
+          <div class="space-y-3" id="safa-category-bars"></div>
+          <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-800/50 text-[11px] text-emerald-700 dark:text-emerald-400">
+            <b>e-Invois LHDN:</b> kewajipan dan tarikh bergantung pada jumlah hasil tahunan syarikat. Semak garis panduan semasa di portal LHDN / MyInvois sebelum bergantung pada mana-mana ringkasan.
+          </div>
+        </div>
+        <div class="lg:col-span-2 card">
+          <div class="flex items-center justify-between mb-4"><h3 class="font-bold text-sm">Rekod Perbelanjaan</h3><span class="text-xs text-slate-400">Disimpan dalam pelayar ini</span></div>
+          <div class="overflow-x-auto custom-scrollbar max-h-96">
+            <table class="w-full text-left text-xs" id="safa-table">
+              <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-y border-slate-100 dark:border-slate-800">
+                <tr><th class="th">Tarikh</th><th class="th">Perkara / Vendor</th><th class="th">Kategori</th><th class="th text-right">Jumlah (RM)</th><th class="th text-center" data-skip>Tindakan</th></tr>
+              </thead>
+              <tbody id="safa-expense-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4 -->
+    <div id="tab-ara" class="space-y-6 hidden">
+      <div class="bar">
+        <div>
+          <h2 class="text-base font-bold flex items-center space-x-2"><i class="fa-solid fa-bullhorn text-rose-500"></i><span>Pemasaran & Prospek (ARA Lite)</span></h2>
+          <p class="text-xs text-slate-500">Templat iklan dan pipeline WhatsApp prospek.</p>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="openModal('modal-add-lead')" class="btn bg-rose-600 hover:bg-rose-700 text-white"><i class="fa-solid fa-user-plus"></i><span>Daftar Prospek</span></button>
+          <button onclick="exportTableToCSV('ara-table', 'Senarai_Leads_Pelanggan.csv')" class="btn btn-ghost"><i class="fa-solid fa-download"></i><span>CSV</span></button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-sm flex items-center space-x-2 mb-3"><i class="fa-solid fa-wand-sparkles text-rose-500"></i><span>Penjana Teks Iklan (Templat)</span></h3>
+            <div class="space-y-3">
+              <div><label class="lbl">Menu / Pakej Dipromosi</label><input id="ad-promo-topic" type="text" value="Pakej Kopi Karamel + Croissant RM10 (Jam 3pm-6pm)" class="inp text-xs"></div>
+              <div class="grid grid-cols-2 gap-3">
+                <div><label class="lbl">Tona</label>
+                  <select id="ad-promo-tone" class="inp text-xs px-2.5"><option value="santai">Santai (Gen-Z / TikTok)</option><option value="urgency">FOMO & Terhad</option><option value="formal">Eksklusif (Korporat)</option></select></div>
+                <div><label class="lbl">Sasaran</label>
+                  <select id="ad-promo-target" class="inp text-xs px-2.5"><option value="student">Pelajar / Belia</option><option value="office">Pekerja Pejabat</option><option value="family">Keluarga</option></select></div>
+              </div>
+              <div><label class="lbl">Hasil</label><textarea id="ad-copy-output" rows="7" class="inp text-xs leading-relaxed font-mono custom-scrollbar" readonly></textarea></div>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <button onclick="generateAdCopy()" class="btn flex-1 bg-rose-600 hover:bg-rose-700 text-white"><i class="fa-solid fa-sparkles"></i><span>Jana Teks</span></button>
+            <button onclick="copyAdToClipboard()" class="btn btn-ghost" title="Salin"><i class="fa-solid fa-copy"></i></button>
+          </div>
+        </div>
+
+        <div class="card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="font-bold text-sm flex items-center space-x-2"><i class="fa-solid fa-funnel-dollar text-emerald-600"></i><span>Pipeline Prospek</span></h3>
+              <span class="text-xs text-slate-400" id="ara-leads-count"></span>
+            </div>
+            <div class="overflow-x-auto custom-scrollbar max-h-96">
+              <table class="w-full text-left text-xs" id="ara-table">
+                <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-y border-slate-100 dark:border-slate-800">
+                  <tr><th class="th">Nama</th><th class="th">Minat</th><th class="th">Status</th><th class="th text-center" data-skip>WA</th></tr>
+                </thead>
+                <tbody id="ara-leads-tbody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium"></tbody>
+              </table>
+            </div>
+          </div>
+          <p class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">Butang hijau membuka WhatsApp dengan mesej susulan siap taip. Anda tekan hantar sendiri.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <div id="modal-add-expense" class="modal hidden"><div class="modal-box">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold">Rekod Perbelanjaan</h3><button onclick="closeModal('modal-add-expense')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+    <div class="space-y-3">
+      <div><label class="lbl">Perkara / Pembekal</label><input id="exp-desc" type="text" placeholder="Cth: Stok Susu & Syrup" class="inp"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="lbl">Jumlah (RM)</label><input id="exp-amount" type="number" step="0.01" min="0" placeholder="185.00" class="inp font-bold"></div>
+        <div><label class="lbl">Kategori</label><select id="exp-cat" class="inp px-2"><option>Bahan Mentah</option><option>Utiliti & Sewa</option><option>Peralatan & Servis</option><option>Pemasaran</option><option>Lain-lain</option></select></div>
+      </div>
+      <div><label class="lbl">Tarikh</label><input id="exp-date" type="date" class="inp"></div>
+    </div>
+    <div class="flex justify-end space-x-2 mt-6"><button onclick="closeModal('modal-add-expense')" class="btn text-slate-500">Batal</button><button onclick="saveNewExpense()" class="btn bg-amber-600 hover:bg-amber-700 text-white">Simpan</button></div>
+  </div></div>
+
+  <div id="modal-add-sale" class="modal hidden"><div class="modal-box">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold">Rekod Jualan</h3><button onclick="closeModal('modal-add-sale')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+    <div class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="lbl">Jumlah (RM)</label><input id="sale-amount" type="number" step="0.01" min="0" placeholder="1250.00" class="inp font-bold"></div>
+        <div><label class="lbl">Tarikh</label><input id="sale-date" type="date" class="inp"></div>
+      </div>
+      <div><label class="lbl">Nota (pilihan)</label><input id="sale-note" type="text" placeholder="Cth: Jualan penutup hari" class="inp"></div>
+    </div>
+    <div class="flex justify-end space-x-2 mt-6"><button onclick="closeModal('modal-add-sale')" class="btn text-slate-500">Batal</button><button onclick="saveNewSale()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white">Simpan</button></div>
+  </div></div>
+
+  <div id="modal-add-staff" class="modal hidden"><div class="modal-box">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold">Daftar Staf Baharu</h3><button onclick="closeModal('modal-add-staff')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+    <div class="space-y-3">
+      <div><label class="lbl">Nama Penuh</label><input id="new-staff-name" type="text" class="inp"></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label class="lbl">Jawatan</label><input id="new-staff-role" type="text" placeholder="Barista" class="inp"></div>
+        <div><label class="lbl">Gaji Asas (RM/bln)</label><input id="new-staff-salary" type="number" min="0" placeholder="1800" class="inp font-semibold"></div>
+      </div>
+      <div><label class="lbl">No. WhatsApp</label><input id="new-staff-phone" type="tel" placeholder="0123456789" class="inp"></div>
+    </div>
+    <div class="flex justify-end space-x-2 mt-6"><button onclick="closeModal('modal-add-staff')" class="btn text-slate-500">Batal</button><button onclick="saveNewStaff()" class="btn bg-indigo-600 hover:bg-indigo-700 text-white">Daftar</button></div>
+  </div></div>
+
+  <div id="modal-add-lead" class="modal hidden"><div class="modal-box">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold">Tambah Prospek</h3><button onclick="closeModal('modal-add-lead')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+    <div class="space-y-3">
+      <div><label class="lbl">Nama Pelanggan / Syarikat</label><input id="lead-name" type="text" class="inp"></div>
+      <div><label class="lbl">No. WhatsApp</label><input id="lead-phone" type="tel" placeholder="0178899221" class="inp"></div>
+      <div><label class="lbl">Minat</label><input id="lead-service" type="text" placeholder="Katering Sandwich 60 Pax" class="inp"></div>
+    </div>
+    <div class="flex justify-end space-x-2 mt-6"><button onclick="closeModal('modal-add-lead')" class="btn text-slate-500">Batal</button><button onclick="saveNewLead()" class="btn bg-rose-600 hover:bg-rose-700 text-white">Simpan</button></div>
+  </div></div>
+
+  <div id="modal-export" class="modal hidden"><div class="modal-box max-w-lg">
+    <div class="flex items-center justify-between mb-4"><h3 class="font-bold">Tetapan, Eksport & Google Sheets</h3><button onclick="closeModal('modal-export')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button></div>
+
+    <div class="space-y-4 text-xs">
+      <div>
+        <label class="lbl">No. WhatsApp kedai (untuk teks iklan, format 60123456789)</label>
+        <input id="set-shop-phone" type="tel" class="inp" placeholder="60123456789" onchange="saveSettings()">
+      </div>
+
+      <div class="p-3 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+        <h4 class="font-bold flex items-center space-x-1.5"><i class="fa-solid fa-cloud text-emerald-600"></i><span>Sync Google Sheets (Apps Script)</span></h4>
+        <p class="text-slate-500">Data biasa disimpan dalam pelayar ini sahaja. Sync membolehkan telefon staf dan pengurus berkongsi data. Lihat <code>opsos/README.md</code> untuk persediaan.</p>
+        <label class="lbl">URL Web App</label>
+        <input id="set-sheet-url" type="url" class="inp text-xs" placeholder="https://script.google.com/macros/s/.../exec" onchange="saveSettings()">
+        <label class="lbl">Token rahsia</label>
+        <input id="set-sheet-token" type="password" class="inp text-xs" autocomplete="off" onchange="saveSettings()">
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="syncPush()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white"><i class="fa-solid fa-cloud-arrow-up"></i><span>Hantar ke Sheets</span></button>
+          <button onclick="syncPull()" class="btn btn-ghost"><i class="fa-solid fa-cloud-arrow-down"></i><span>Tarik dari Sheets</span></button>
+        </div>
+        <p class="text-[11px] text-amber-600 dark:text-amber-400">Kedua-dua tindakan menggantikan keseluruhan data di hujung sasaran. Tarik sebelum mula bekerja, hantar selepas siap. Hanya satu orang menghantar pada satu masa.</p>
+      </div>
+
+      <div class="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-2xl border border-emerald-200 dark:border-emerald-800 flex items-center justify-between gap-2">
+        <div><h4 class="font-bold text-emerald-900 dark:text-emerald-200">Salin untuk tampal ke Sheets</h4><p class="text-[11px] text-emerald-700 dark:text-emerald-400">Perbelanjaan, format tab. Tekan Ctrl+V dalam Sheets.</p></div>
+        <button onclick="copyToGoogleSheetsFormat()" class="btn bg-emerald-600 hover:bg-emerald-700 text-white whitespace-nowrap"><i class="fa-solid fa-copy"></i><span>Salin</span></button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="exportTableToCSV('safa-table', 'Rekod_Kewangan_OpsOS.csv')" class="btn btn-ghost py-3"><i class="fa-solid fa-file-csv text-amber-500"></i><span>CSV Kewangan</span></button>
+        <button onclick="exportTableToCSV('hira-table', 'Log_Kehadiran_OpsOS.csv')" class="btn btn-ghost py-3"><i class="fa-solid fa-file-csv text-indigo-500"></i><span>CSV Kehadiran</span></button>
+      </div>
+
+      <div class="text-center"><button onclick="resetDefaultData()" class="text-[11px] text-rose-500 hover:underline"><i class="fa-solid fa-arrow-rotate-left mr-1"></i> Padam semua data & muat semula data contoh</button></div>
+    </div>
+  </div></div>
+
+  <div id="toast-box" class="fixed bottom-5 right-5 z-[60] transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+    <div class="bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-xs font-medium border border-slate-700">
+      <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-base"></i><span id="toast-message"></span>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Helpers ===== */
+    const $ = (id) => document.getElementById(id);
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const rm = (n) => 'RM ' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const pad = (n) => String(n).padStart(2, '0');
+    const localDate = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const fmtTime = (ts) => new Date(ts).toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+    const uid = (p) => p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+
+    function loadKey(key, fallback) {
+      try { const v = JSON.parse(localStorage.getItem(key)); return Array.isArray(fallback) ? (Array.isArray(v) ? v : fallback) : (v ?? fallback); }
+      catch (e) { return fallback; }
+    }
+    function store(key, value) {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* storage blocked: data lives for this session only */ }
+    }
+
+    /* ===== Demo data ===== */
+    function defaults() {
+      return {
+        staff: [
+          { id: 'stf_1', name: 'Ahmad Faiz', role: 'Head Barista', salary: 2200, phone: '0123456781', shift: 'Pagi' },
+          { id: 'stf_2', name: 'Nurul Aina', role: 'Pastry Chef & Baker', salary: 2000, phone: '0176543210', shift: 'Pagi' },
+          { id: 'stf_3', name: 'Siti Sarah', role: 'Front Counter & Cashier', salary: 1700, phone: '0139988776', shift: 'Petang' },
+          { id: 'stf_4', name: 'Zul Hilmi', role: 'Kitchen Crew', salary: 1600, phone: '0191234567', shift: 'Petang' }
+        ],
+        expenses: [
+          { id: 'exp_1', date: '2026-10-20', desc: 'Stok Susu Barista (20 Kotak)', cat: 'Bahan Mentah', amount: 160 },
+          { id: 'exp_2', date: '2026-10-21', desc: 'Biji Kopi Arabica Blend 5kg', cat: 'Bahan Mentah', amount: 380 },
+          { id: 'exp_3', date: '2026-10-21', desc: 'Bil Elektrik TNB Kafe', cat: 'Utiliti & Sewa', amount: 890 },
+          { id: 'exp_4', date: '2026-10-22', desc: 'Iklan Instagram & TikTok', cat: 'Pemasaran', amount: 150 },
+          { id: 'exp_5', date: '2026-10-22', desc: 'Servis Penapis Air', cat: 'Peralatan & Servis', amount: 120 }
+        ],
+        sales: [
+          { id: 'sal_1', date: '2026-10-18', amount: 3200, note: 'Contoh' },
+          { id: 'sal_2', date: '2026-10-19', amount: 2850, note: 'Contoh' },
+          { id: 'sal_3', date: '2026-10-20', amount: 3400, note: 'Contoh' },
+          { id: 'sal_4', date: '2026-10-21', amount: 2900, note: 'Contoh' },
+          { id: 'sal_5', date: '2026-10-22', amount: 2900, note: 'Contoh' }
+        ],
+        attendance: [],
+        leads: [
+          { id: 'ld_1', name: 'Puan Haliza (Sekolah Rendah)', phone: '0129876543', service: '50 Box Coffee & Donut Hari Guru', status: 'Baru Diterima' },
+          { id: 'ld_2', name: 'Encik Kamal (Firma Guaman)', phone: '0112345678', service: 'Katering Mesyuarat Lembaga Pengarah', status: 'Dihubungi' },
+          { id: 'ld_3', name: 'Farah & Amin', phone: '0173344556', service: 'Tempahan Ruang Sambutan Hari Lahir', status: 'Sebut Harga Dihantar' }
+        ]
+      };
+    }
+    const LEAD_STATUS = ['Baru Diterima', 'Dihubungi', 'Sebut Harga Dihantar', 'Berjaya', 'Gagal'];
+
+    const D = defaults();
+    const state = {
+      role: 'admin',
+      activeTab: 'csuite',
+      persona: 'cfo',
+      staff: loadKey('opsos_staff', D.staff),
+      expenses: loadKey('opsos_expenses', D.expenses),
+      sales: loadKey('opsos_sales', D.sales),
+      attendance: loadKey('opsos_attendance', D.attendance),
+      leads: loadKey('opsos_leads', D.leads),
+      cash: Number(loadKey('opsos_cash', 20000)) || 0,
+      settings: loadKey('opsos_settings', { shopPhone: '', sheetUrl: '', sheetToken: '' })
+    };
+
+    function saveState() {
+      store('opsos_staff', state.staff); store('opsos_expenses', state.expenses); store('opsos_sales', state.sales);
+      store('opsos_attendance', state.attendance); store('opsos_leads', state.leads); store('opsos_cash', state.cash);
+    }
+
+    /* ===== Domain logic ===== */
+    // Employer EPF is 13% up to RM5,000 and 12% above; SOCSO/EIS apply up to a RM6,000 wage ceiling.
+    // SOCSO percentages are approximations; the official schedules use wage bands.
+    function payroll(salary) {
+      const basic = Number(salary) || 0;
+      const cap = Math.min(basic, 6000);
+      const epfEmp = basic * 0.11;
+      const socsoEis = cap * (0.005 + 0.002);
+      const erRate = basic <= 5000 ? 0.13 : 0.12;
+      const employerAdd = basic * erRate + cap * (0.0175 + 0.002);
+      return { basic, epfEmp, socsoEis, net: basic - epfEmp - socsoEis, erRate, employerCost: basic + employerAdd };
+    }
+    const monthlyPayroll = () => state.staff.reduce((s, p) => s + payroll(p.salary).employerCost, 0);
+
+    function lastPunchToday(name) {
+      const today = localDate();
+      const punches = state.attendance.filter((a) => a.staffName === name && localDate(new Date(a.ts)) === today);
+      return punches.reduce((best, a) => (!best || a.ts > best.ts ? a : best), null);
+    }
+    const isOnDuty = (name) => lastPunchToday(name)?.type === 'Masuk';
+    const onDutyStaff = () => state.staff.filter((s) => isOnDuty(s.name));
+
+    /* ===== Init & routing ===== */
+    window.onload = () => {
+      try { if (localStorage.getItem('opsos_dark') === '1') toggleDarkMode(); } catch (e) {}
+      $('set-shop-phone').value = state.settings.shopPhone || '';
+      $('set-sheet-url').value = state.settings.sheetUrl || '';
+      $('set-sheet-token').value = state.settings.sheetToken || '';
+      $('exp-date').value = localDate();
+      $('sale-date').value = localDate();
+      tick(); setInterval(tick, 1000);
+      renderAll();
+      generateAdCopy();
+      setAIPersona('cfo');
+      switchRole('admin', true);
+    };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') document.querySelectorAll('.modal').forEach((m) => m.classList.add('hidden'));
+    });
+
+    function tick() {
+      const now = new Date();
+      $('live-datetime').innerText = now.toLocaleString('ms-MY', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      $('clock-live-time').innerText = now.toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+
+    function switchRole(role, silent) {
+      state.role = role;
+      const on = 'flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-700 shadow-sm transition-all ';
+      const off = 'flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-all';
+      $('role-staff-btn').className = role === 'staff' ? on + 'text-emerald-600' : off;
+      $('role-admin-btn').className = role === 'admin' ? on + 'text-indigo-600' : off;
+      $('admin-tabs-bar').classList.toggle('hidden', role === 'staff');
+      $('view-staff').classList.toggle('hidden', role !== 'staff');
+      if (role === 'staff') hideAllAdminTabs(); else switchTab(state.activeTab);
+      if (!silent) showToast(role === 'staff' ? 'Paparan Staf & Kaunter' : 'Paparan Pengurus', 'info');
+    }
+
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      hideAllAdminTabs();
+      $('tab-' + tabId).classList.remove('hidden');
+      document.querySelectorAll('.admin-tab-btn').forEach((b) => {
+        const active = b.id === 'tab-btn-' + tabId;
+        b.classList.toggle('tab-on', active);
+        b.classList.toggle('tab-off', !active);
+      });
+    }
+    const hideAllAdminTabs = () => ['csuite', 'hira', 'safa', 'ara'].forEach((id) => $('tab-' + id).classList.add('hidden'));
+
+    /* ===== Rendering ===== */
+    function renderAll() {
+      renderMetrics(); renderStaffSelects(); renderAttendanceTable(); renderExpenseTable();
+      renderLeadsTable(); renderCategoryBreakdown(); renderStaffRoster(); renderSales(); calculatePayroll();
+    }
+
+    function renderMetrics() {
+      const sales = state.sales.reduce((a, s) => a + Number(s.amount || 0), 0);
+      const exp = state.expenses.reduce((a, e) => a + Number(e.amount || 0), 0);
+      const net = sales - exp;
+      const months = new Set(state.expenses.map((e) => String(e.date).slice(0, 7))).size || 1;
+      const burn = exp / months + monthlyPayroll();
+      const runway = burn > 0 ? state.cash / burn : null;
+
+      $('metric-monthly-sales').innerText = rm(sales);
+      $('metric-sales-count').innerText = `${state.sales.length} rekod jualan`;
+      $('metric-total-expenses').innerText = rm(exp);
+      $('metric-expense-count').innerText = `${state.expenses.length} rekod belanja`;
+      $('metric-net-profit').innerText = rm(net);
+      $('metric-net-profit').className = 'text-2xl font-extrabold ' + (net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600');
+      $('metric-margin-percent').innerText = sales > 0 ? `${((net / sales) * 100).toFixed(1)}% margin` : 'Belum ada jualan direkod';
+      $('metric-runway').innerText = runway === null ? '-' : `${runway.toFixed(1)} bulan`;
+      $('metric-cash').innerText = rm(state.cash);
+
+      const n = onDutyStaff().length;
+      $('active-staff-count-banner').innerText = `${n} staf sedang bertugas`;
+    }
+
+    function renderStaffSelects() {
+      const fill = (el, items) => {
+        const prev = el.value;
+        el.innerHTML = '';
+        items.forEach(([value, text]) => { const o = document.createElement('option'); o.value = value; o.textContent = text; el.appendChild(o); });
+        if (items.some(([v]) => v === prev)) el.value = prev;
+      };
+      fill($('staff-clock-select'), state.staff.map((s) => [s.name, `${s.name} (${s.role})`]));
+      fill($('payroll-staff-select'), state.staff.map((s) => [s.id, `${s.name} - ${rm(s.salary)}/bln`]));
+    }
+
+    function renderStaffRoster() {
+      $('staff-roster-today').innerHTML = state.staff.map((s) => {
+        const last = lastPunchToday(s.name);
+        const [cls, text] = !last ? ['bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400', `Syif ${s.shift}`]
+          : last.type === 'Masuk' ? ['bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300', 'Sedang Bertugas']
+          : ['bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300', 'Sudah Balik'];
+        return `<div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-[10px]">${esc(s.name.substring(0, 2).toUpperCase())}</div>
+            <div><div class="font-bold">${esc(s.name)}</div><div class="text-[11px] text-slate-400">${esc(s.role)}</div></div>
+          </div>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold ${cls}">${esc(text)}</span></div>`;
+      }).join('');
+    }
+
+    function renderAttendanceTable() {
+      const rows = [...state.attendance].sort((a, b) => (a.ts < b.ts ? 1 : -1)).slice(0, 100);
+      $('attendance-log-tbody').innerHTML = rows.map((a) => {
+        const badge = a.type === 'Masuk'
+          ? '<span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-bold">Clock-In</span>'
+          : '<span class="px-2 py-0.5 rounded-md bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-300 font-bold">Clock-Out</span>';
+        return `<tr><td class="td font-bold">${esc(a.staffName)}</td><td class="td text-slate-500">${esc(a.role || 'Staf')}</td><td class="td">${badge}</td>
+          <td class="td font-mono">${esc(localDate(new Date(a.ts)))} ${esc(fmtTime(a.ts))}</td><td class="td text-[11px] text-slate-500">${esc(a.status)}</td></tr>`;
+      }).join('');
+      $('attendance-total-badge').innerText = `${state.attendance.length} rekod`;
+    }
+
+    function renderExpenseTable() {
+      $('safa-expense-tbody').innerHTML = state.expenses.map((e) => `<tr>
+        <td class="td font-mono text-slate-500">${esc(e.date)}</td>
+        <td class="td font-semibold">${esc(e.desc)}</td>
+        <td class="td"><span class="px-2 py-0.5 rounded text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${esc(e.cat)}</span></td>
+        <td class="td text-right font-bold text-rose-600 dark:text-rose-400">${rm(e.amount)}</td>
+        <td class="td text-center" data-skip><button data-id="${esc(e.id)}" onclick="deleteExpense(this.dataset.id)" class="text-slate-400 hover:text-rose-500 p-1" title="Padam"><i class="fa-solid fa-trash-can"></i></button></td></tr>`).join('');
+    }
+
+    function renderSales() {
+      const rows = [...state.sales].sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 30);
+      $('sales-list').innerHTML = rows.length ? rows.map((s) => `<div class="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+        <div><span class="font-mono text-slate-500">${esc(s.date)}</span> <span class="text-slate-400">${esc(s.note || '')}</span></div>
+        <div class="flex items-center space-x-2"><span class="font-bold text-emerald-600 dark:text-emerald-400">${rm(s.amount)}</span>
+        <button data-id="${esc(s.id)}" onclick="deleteSale(this.dataset.id)" class="text-slate-400 hover:text-rose-500" title="Padam"><i class="fa-solid fa-trash-can"></i></button></div></div>`).join('')
+        : '<div class="text-slate-400">Belum ada jualan. Tekan "Tambah Jualan".</div>';
+    }
+
+    function renderCategoryBreakdown() {
+      const totals = {}; let grand = 0;
+      state.expenses.forEach((e) => { const c = e.cat || 'Lain-lain'; const a = Number(e.amount || 0); totals[c] = (totals[c] || 0) + a; grand += a; });
+      $('safa-category-bars').innerHTML = Object.keys(totals).sort((a, b) => totals[b] - totals[a]).map((c) => {
+        const pct = grand ? Math.round((totals[c] / grand) * 100) : 0;
+        return `<div><div class="flex justify-between text-xs mb-1"><span class="font-medium">${esc(c)}</span><span class="font-bold">${rm(totals[c])} (${pct}%)</span></div>
+          <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-amber-500 h-2 rounded-full" style="width:${pct}%"></div></div></div>`;
+      }).join('') || '<div class="text-xs text-slate-400">Tiada data.</div>';
+    }
+
+    function waLink(ld) {
+      const digits = String(ld.phone).replace(/\D/g, '');
+      const wa = digits.startsWith('60') ? digits : digits.startsWith('0') ? '6' + digits : '60' + digits;
+      const msg = `Salam sejahtera ${ld.name}, terima kasih kerana bertanya tentang ${ld.service}. Bila masa yang sesuai untuk kami bantu sediakan sebut harga?`;
+      return `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+    }
+
+    function renderLeadsTable() {
+      $('ara-leads-tbody').innerHTML = state.leads.map((ld) => `<tr>
+        <td class="td font-bold">${esc(ld.name)}<div class="text-[11px] text-slate-400 font-normal font-mono">${esc(ld.phone)}</div></td>
+        <td class="td text-slate-600 dark:text-slate-300">${esc(ld.service)}</td>
+        <td class="td"><select data-id="${esc(ld.id)}" onchange="setLeadStatus(this.dataset.id, this.value)" class="bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded text-[10px] font-bold px-1 py-0.5">
+          ${(LEAD_STATUS.includes(ld.status) ? LEAD_STATUS : [ld.status, ...LEAD_STATUS]).map((s) => `<option value="${esc(s)}" ${s === ld.status ? 'selected' : ''}>${esc(s)}</option>`).join('')}</select></td>
+        <td class="td text-center" data-skip><a href="${esc(waLink(ld))}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-2.5 py-1 rounded-lg text-[11px]"><i class="fa-brands fa-whatsapp"></i><span>Hubungi</span></a></td></tr>`).join('');
+      $('ara-leads-count').innerText = `${state.leads.length} prospek`;
+    }
+
+    function setLeadStatus(id, status) {
+      const l = state.leads.find((x) => x.id === id);
+      if (l) { l.status = status; saveState(); }
+    }
+
+    /* ===== Calculators & advisor ===== */
+    function calculatePayroll() {
+      const sel = $('payroll-staff-select');
+      const s = state.staff.find((x) => x.id === sel.value) || state.staff[0];
+      if (!s) return;
+      const p = payroll(s.salary);
+      $('pr-basic').innerText = rm(p.basic);
+      $('pr-epf-emp').innerText = '-' + rm(p.epfEmp);
+      $('pr-socso-emp').innerText = '-' + rm(p.socsoEis);
+      $('pr-net').innerText = rm(p.net);
+      $('pr-employer-label').innerText = `Kos majikan (KWSP ${Math.round(p.erRate * 100)}% + SOCSO/EIS):`;
+      $('pr-employer-cost').innerText = rm(p.employerCost);
+    }
+
+    function generateAdCopy() {
+      const topic = $('ad-promo-topic').value.trim() || 'Menu Spesial Kafe';
+      const tone = $('ad-promo-tone').value;
+      const target = $('ad-promo-target').value;
+      const phone = (state.settings.shopPhone || '').replace(/\D/g, '');
+      const link = phone ? `https://wa.me/${phone}` : '[letak no. WhatsApp kedai dalam Tetapan]';
+      const audience = { student: 'Pelajar & belia', office: 'Warga pejabat', family: 'Satu keluarga' }[target];
+      const t = {
+        santai: `${audience}, tengah lemau? ☕✨\n\nHarini ada: ${topic}.\n\nKopi fresh, tempat lepak selesa, Wi-Fi laju. Singgah sebelum habis!\n\n📍 Order / tanya: ${link}\n#CafeVibes #KopiPadu #LepakPetang`,
+        urgency: `⚠️ TERHAD! ${audience}, jangan terlepas:\n\n${topic}\n\nTawaran sehingga stok habis hari ini sahaja.\n\n👉 Tempah slot anda: ${link}\n#FlashSale #KafeMalaysia`,
+        formal: `Mencari hidangan istimewa untuk mesyuarat atau acara anda?\n\nKami menawarkan: ${topic}.\n\nKopi artisan dan pastri segar disediakan oleh pasukan profesional kami.\n\nHubungi kami untuk sebut harga: ${link}\n#Katering #ArtisanCoffee`
+      };
+      $('ad-copy-output').value = t[tone];
+    }
+
+    function copyText(text, okMsg) {
+      const fallback = () => {
+        const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+        let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta); showToast(ok ? okMsg : 'Gagal menyalin. Salin secara manual.', ok ? 'success' : 'warning');
+      };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => showToast(okMsg, 'success'), fallback);
+      else fallback();
+    }
+    const copyAdToClipboard = () => copyText($('ad-copy-output').value, 'Teks iklan disalin!');
+
+    function setAIPersona(p) {
+      state.persona = p;
+      const colors = { cfo: 'bg-indigo-600', cmo: 'bg-rose-600', chro: 'bg-emerald-600' };
+      ['cfo', 'cmo', 'chro'].forEach((k) => {
+        $('persona-btn-' + k).className = 'px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ' + (k === p ? colors[k] + ' text-white' : 'text-slate-300 hover:text-white');
+      });
+      renderAdvice();
+    }
+
+    function renderAdvice() {
+      const sales = state.sales.reduce((a, s) => a + Number(s.amount || 0), 0);
+      const exp = state.expenses.reduce((a, e) => a + Number(e.amount || 0), 0);
+      const pay = monthlyPayroll();
+      const cats = {};
+      state.expenses.forEach((e) => { cats[e.cat] = (cats[e.cat] || 0) + Number(e.amount || 0); });
+      const top = Object.entries(cats).sort((a, b) => b[1] - a[1])[0];
+      let html;
+      if (state.persona === 'cfo') {
+        html = `<div class="text-emerald-400 font-bold">📊 Kewangan</div>
+          <p>1. ${top ? `Kategori belanja terbesar: <strong>${esc(top[0])}</strong> (${rm(top[1])}, ${exp ? Math.round((top[1] / exp) * 100) : 0}% daripada belanja direkod).` : 'Belum ada perbelanjaan direkod.'}</p>
+          <p>2. Anggaran kos gaji bulanan (termasuk caruman majikan): <strong>${rm(pay)}</strong>${sales > 0 ? `, bersamaan ${Math.round((pay / sales) * 100)}% daripada jualan direkod. Jualan direkod ialah jumlah semua tarikh, jadi bandingan ini kasar sahaja.` : '.'}</p>
+          <p class="text-slate-400 text-xs">Tambah jualan harian di sebelah kiri supaya angka ini bermakna.</p>`;
+      } else if (state.persona === 'cmo') {
+        const open = state.leads.filter((l) => !['Berjaya', 'Gagal'].includes(l.status));
+        const fresh = state.leads.filter((l) => l.status === 'Baru Diterima');
+        html = `<div class="text-rose-400 font-bold">📢 Pemasaran</div>
+          <p>1. Prospek aktif: <strong>${open.length}</strong>; belum dihubungi: <strong>${fresh.length}</strong>${fresh.length ? ' (' + fresh.map((l) => esc(l.name)).join(', ') + ')' : ''}.</p>
+          <p>2. Hubungi prospek baharu dalam masa 24 jam melalui butang WhatsApp di tab ARA, kemudian kemas kini status.</p>
+          <p class="text-slate-400 text-xs">Tiada data trafik per jam dalam sistem ini, jadi tiada cadangan waktu promosi dibuat.</p>`;
+      } else {
+        const on = onDutyStaff();
+        const missing = state.staff.filter((s) => !lastPunchToday(s.name));
+        html = `<div class="text-indigo-400 font-bold">👥 Staf</div>
+          <p>1. Sedang bertugas: <strong>${on.length}</strong>${on.length ? ' (' + on.map((s) => esc(s.name)).join(', ') + ')' : ''}.</p>
+          <p>2. Belum ada rekod hari ini: ${missing.length ? missing.map((s) => esc(s.name)).join(', ') : 'tiada'}.</p>
+          <p>3. Anggaran caruman majikan bulanan (KWSP + SOCSO + EIS): <strong>${rm(pay - state.staff.reduce((a, s) => a + Number(s.salary || 0), 0))}</strong>. Semak tarikh akhir bayaran dengan KWSP dan PERKESO.</p>`;
+      }
+      $('ai-advice-display').innerHTML = html;
+    }
+
+    /* ===== Staff actions ===== */
+    function handleStaffPunch(type) {
+      const name = $('staff-clock-select').value;
+      const s = state.staff.find((x) => x.name === name);
+      if (!s) { showToast('Pilih staf dahulu.', 'warning'); return; }
+      const on = isOnDuty(name);
+      if (type === 'Masuk' && on) { showToast(`${name} sudah Clock-In.`, 'warning'); return; }
+      if (type === 'Keluar' && !on) { showToast(`${name} belum Clock-In hari ini.`, 'warning'); return; }
+      const ts = new Date().toISOString();
+      state.attendance.unshift({ id: uid('att'), staffName: name, role: s.role, type, ts, status: `Direkod (${$('staff-shift-select').value})` });
+      saveState(); renderAll();
+      showToast(`${name} ${type === 'Masuk' ? 'Clock-In' : 'Clock-Out'} pada ${fmtTime(ts)}`, 'success');
+    }
+
+    function handleStaffClaimSubmit() {
+      const desc = $('staff-claim-desc').value.trim();
+      const amt = parseFloat($('staff-claim-amount').value);
+      if (!desc || !(amt > 0)) { showToast('Isi keterangan dan jumlah yang sah.', 'warning'); return; }
+      state.expenses.unshift({ id: uid('exp'), date: localDate(), desc: `${desc} [Tuntutan Kaunter]`, cat: $('staff-claim-cat').value, amount: amt });
+      saveState(); renderAll();
+      $('staff-claim-desc').value = ''; $('staff-claim-amount').value = '';
+      showToast('Tuntutan direkodkan ke lejar.', 'success');
+    }
+
+    function addLead(name, phone, service, status) {
+      state.leads.unshift({ id: uid('ld'), name, phone, service: service || 'Pertanyaan Menu / Tempahan', status });
+      saveState(); renderAll();
+    }
+    function handleQuickLeadAdd() {
+      const name = $('quick-lead-name').value.trim(), phone = $('quick-lead-phone').value.trim();
+      if (!name || !phone) { showToast('Isi nama dan nombor WhatsApp.', 'warning'); return; }
+      addLead(name, phone, $('quick-lead-service').value.trim(), 'Baru Diterima');
+      ['quick-lead-name', 'quick-lead-phone', 'quick-lead-service'].forEach((i) => ($(i).value = ''));
+      showToast('Prospek disimpan.', 'success');
+    }
+    function saveNewLead() {
+      const name = $('lead-name').value.trim(), phone = $('lead-phone').value.trim();
+      if (!name || !phone) { showToast('Isi nama dan telefon prospek.', 'warning'); return; }
+      addLead(name, phone, $('lead-service').value.trim(), 'Baru Diterima');
+      closeModal('modal-add-lead');
+      ['lead-name', 'lead-phone', 'lead-service'].forEach((i) => ($(i).value = ''));
+      showToast('Prospek disimpan.', 'success');
+    }
+
+    /* ===== Finance ===== */
+    function handleReceiptPick(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      $('exp-desc').value = `Resit: ${file.name}`;
+      event.target.value = '';
+      openModal('modal-add-expense');
+      $('exp-amount').focus();
+      showToast('Isi jumlah dan kategori daripada resit anda.', 'info');
+    }
+
+    function saveNewExpense() {
+      const desc = $('exp-desc').value.trim(), amount = parseFloat($('exp-amount').value);
+      if (!desc || !(amount > 0)) { showToast('Isi maklumat perbelanjaan yang sah.', 'warning'); return; }
+      state.expenses.unshift({ id: uid('exp'), date: $('exp-date').value || localDate(), desc, cat: $('exp-cat').value, amount });
+      saveState(); renderAll(); closeModal('modal-add-expense');
+      $('exp-desc').value = ''; $('exp-amount').value = '';
+      showToast('Perbelanjaan direkodkan.', 'success');
+    }
+    function deleteExpense(id) {
+      if (!confirm('Padam rekod perbelanjaan ini?')) return;
+      state.expenses = state.expenses.filter((e) => e.id !== id);
+      saveState(); renderAll();
+    }
+
+    function saveNewSale() {
+      const amount = parseFloat($('sale-amount').value);
+      if (!(amount > 0)) { showToast('Isi jumlah jualan yang sah.', 'warning'); return; }
+      state.sales.unshift({ id: uid('sal'), date: $('sale-date').value || localDate(), amount, note: $('sale-note').value.trim() });
+      saveState(); renderAll(); closeModal('modal-add-sale');
+      $('sale-amount').value = ''; $('sale-note').value = '';
+      showToast('Jualan direkodkan.', 'success');
+    }
+    function deleteSale(id) {
+      if (!confirm('Padam rekod jualan ini?')) return;
+      state.sales = state.sales.filter((s) => s.id !== id);
+      saveState(); renderAll();
+    }
+    function editCash() {
+      const v = prompt('Baki tunai semasa (RM):', state.cash);
+      if (v === null) return;
+      const n = parseFloat(v);
+      if (isNaN(n) || n < 0) { showToast('Jumlah tidak sah.', 'warning'); return; }
+      state.cash = n; saveState(); renderAll();
+    }
+
+    function saveNewStaff() {
+      const name = $('new-staff-name').value.trim(), role = $('new-staff-role').value.trim();
+      if (!name || !role) { showToast('Isi nama dan jawatan staf.', 'warning'); return; }
+      if (state.staff.some((s) => s.name.toLowerCase() === name.toLowerCase())) { showToast('Nama staf sudah wujud.', 'warning'); return; }
+      state.staff.push({ id: uid('stf'), name, role, salary: parseFloat($('new-staff-salary').value) || 1500, phone: $('new-staff-phone').value.trim(), shift: 'Pagi' });
+      saveState(); renderAll(); closeModal('modal-add-staff');
+      ['new-staff-name', 'new-staff-role', 'new-staff-salary', 'new-staff-phone'].forEach((i) => ($(i).value = ''));
+      showToast(`Staf ${name} didaftarkan.`, 'success');
+    }
+
+    /* ===== Export & clipboard ===== */
+    function copyToGoogleSheetsFormat() {
+      const clean = (v) => String(v).replace(/[\t\r\n]+/g, ' ');
+      let tsv = 'TARIKH\tPERKARA / VENDOR\tKATEGORI\tJUMLAH (RM)\n';
+      state.expenses.forEach((e) => { tsv += `${clean(e.date)}\t${clean(e.desc)}\t${clean(e.cat)}\t${Number(e.amount).toFixed(2)}\n`; });
+      copyText(tsv, 'Disalin! Tampal terus ke Google Sheets.');
+    }
+
+    function exportTableToCSV(tableId, filename) {
+      const table = $(tableId);
+      const lines = [];
+      table.querySelectorAll('tr').forEach((tr) => {
+        const cells = [...tr.querySelectorAll('td, th')].filter((c) => !c.hasAttribute('data-skip'));
+        if (!cells.length) return;
+        lines.push(cells.map((c) => {
+          let t = c.innerText.replace(/\s+/g, ' ').trim();
+          if (/^[=+\-@]/.test(t)) t = "'" + t; // stop spreadsheet formula injection
+          return '"' + t.replace(/"/g, '""') + '"';
+        }).join(','));
+      });
+      const blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = filename; a.style.display = 'none';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      showToast(`'${filename}' dimuat turun.`, 'success');
+    }
+
+    function copyWhatsAppBriefing() {
+      const today = new Date().toLocaleDateString('ms-MY', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' });
+      const todayStr = localDate();
+      const exp = state.expenses.reduce((a, e) => a + Number(e.amount || 0), 0);
+      const todaySales = state.sales.filter((s) => s.date === todayStr).reduce((a, s) => a + Number(s.amount || 0), 0);
+      const on = onDutyStaff().map((s) => `• ${s.name} (sejak ${fmtTime(lastPunchToday(s.name).ts)})`).join('\n');
+      const open = state.leads.filter((l) => !['Berjaya', 'Gagal'].includes(l.status)).length;
+      copyText(`*📢 RINGKASAN HARIAN KAFE*\n*Tarikh:* ${today}\n\n*👥 Sedang Bertugas:*\n${on || '• Tiada'}\n\n*💰 Kewangan:*\n• Jualan hari ini: ${rm(todaySales)}\n• Belanja terkumpul: ${rm(exp)}\n• Prospek aktif: ${open}\n\nTerima kasih semua! 🙏`, 'Laporan disalin! Buka WhatsApp dan tampal.');
+    }
+
+    function resetDefaultData() {
+      if (!confirm('Ini memadam SEMUA data dalam pelayar ini dan memuatkan data contoh. Teruskan?')) return;
+      const d = defaults();
+      Object.assign(state, { staff: d.staff, expenses: d.expenses, sales: d.sales, attendance: d.attendance, leads: d.leads, cash: 20000 });
+      saveState(); renderAll(); setAIPersona(state.persona); closeModal('modal-export');
+      showToast('Data contoh dimuat semula.', 'info');
+    }
+
+    /* ===== Google Sheets sync (Apps Script) ===== */
+    function saveSettings() {
+      state.settings = { shopPhone: $('set-shop-phone').value.trim(), sheetUrl: $('set-sheet-url').value.trim(), sheetToken: $('set-sheet-token').value };
+      store('opsos_settings', state.settings);
+      generateAdCopy();
+    }
+
+    async function sheetCall(action, data) {
+      saveSettings();
+      const { sheetUrl, sheetToken } = state.settings;
+      if (!/^https:\/\/script\.google\.com\//.test(sheetUrl) || !sheetToken) throw new Error('Isi URL Web App (https://script.google.com/...) dan token dahulu.');
+      // text/plain keeps this a "simple" request, so the browser skips the CORS preflight Apps Script cannot answer.
+      const res = await fetch(sheetUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: sheetToken, action, data }) });
+      const json = await res.json();
+      if (!json.ok) throw new Error(json.error || 'Ralat tidak diketahui');
+      return json;
+    }
+
+    async function syncPush() {
+      if (!confirm('Ini menggantikan SEMUA data dalam Google Sheets dengan data dalam pelayar ini. Teruskan?')) return;
+      showToast('Menghantar ke Google Sheets...', 'info');
+      try {
+        await sheetCall('push', { staff: state.staff, expenses: state.expenses, sales: state.sales, attendance: state.attendance, leads: state.leads, meta: { cash: state.cash } });
+        showToast('Berjaya dihantar ke Google Sheets.', 'success');
+      } catch (e) { showToast('Gagal hantar: ' + e.message, 'warning'); }
+    }
+
+    async function syncPull() {
+      if (!confirm('Ini menggantikan SEMUA data dalam pelayar ini dengan data dari Google Sheets. Teruskan?')) return;
+      showToast('Menarik dari Google Sheets...', 'info');
+      try {
+        const { data } = await sheetCall('pull');
+        ['staff', 'expenses', 'sales', 'attendance', 'leads'].forEach((k) => { if (Array.isArray(data[k])) state[k] = data[k]; });
+        if (data.meta && data.meta.cash !== undefined && data.meta.cash !== '') state.cash = Number(data.meta.cash) || 0;
+        saveState(); renderAll(); setAIPersona(state.persona);
+        showToast('Data dari Google Sheets dimuatkan.', 'success');
+      } catch (e) { showToast('Gagal tarik: ' + e.message, 'warning'); }
+    }
+
+    /* ===== UI utilities ===== */
+    const openModal = (id) => $(id).classList.remove('hidden');
+    const closeModal = (id) => $(id).classList.add('hidden');
+
+    function toggleDarkMode() {
+      const dark = document.documentElement.classList.toggle('dark');
+      $('theme-icon').className = dark ? 'fa-solid fa-sun text-amber-400' : 'fa-solid fa-moon';
+      try { localStorage.setItem('opsos_dark', dark ? '1' : '0'); } catch (e) {}
+    }
+
+    let toastTimer;
+    function showToast(msg, type = 'info') {
+      $('toast-message').innerText = msg;
+      $('toast-icon').className = {
+        success: 'fa-solid fa-circle-check text-emerald-400 text-base',
+        warning: 'fa-solid fa-triangle-exclamation text-amber-400 text-base'
+      }[type] || 'fa-solid fa-circle-info text-indigo-400 text-base';
+      const box = $('toast-box');
+      box.classList.remove('translate-y-20', 'opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => box.classList.add('translate-y-20', 'opacity-0'), 3500);
+    }
+  </script>
+</body>
+</html>
