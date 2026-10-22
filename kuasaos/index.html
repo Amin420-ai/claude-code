@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KuasaOS Free Edition — Sistem Operasi Bisnes &amp; AI Agent (S'Antik Edition)</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #0f172a; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    @media (max-width: 640px) { input, select, textarea { font-size: 16px !important; } }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; color: #000 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+
+  <!-- Top Header -->
+  <header class="no-print sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center font-extrabold text-slate-950 text-lg shadow-lg shadow-emerald-500/20">
+          K
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-base sm:text-lg tracking-tight text-white">KuasaOS <span class="text-emerald-400">Free Clone</span></h1>
+            <span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">100% Percuma · Tanpa Had</span>
+          </div>
+          <p class="text-xs text-slate-400">One Memory AI Business OS · S'Antik Cafe &amp; PKS Malaysia</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 overflow-x-auto max-w-full">
+        <button type="button" id="tab-csuite" onclick="switchModule('csuite')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap bg-emerald-500 text-slate-950 font-semibold">
+          🧠 C-Suite AI
+        </button>
+        <button type="button" id="tab-ara" onclick="switchModule('ara')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white">
+          🚀 ARA (Marketing &amp; CRM)
+        </button>
+        <button type="button" id="tab-hira" onclick="switchModule('hira')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white">
+          👥 HIRA (HR &amp; Gaji)
+        </button>
+        <button type="button" id="tab-safa" onclick="switchModule('safa')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white">
+          🧾 SAFA (Akaun &amp; e-Invois)
+        </button>
+        <button type="button" id="tab-pos" onclick="switchModule('pos')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white">
+          ☕ POS &amp; Menu
+        </button>
+        <button type="button" id="tab-inv" onclick="switchModule('inv')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white">
+          📦 Inventori Dapur
+        </button>
+        <button type="button" id="tab-booking" onclick="switchModule('booking')" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white">
+          📅 Kalendar Katering
+        </button>
+      </nav>
+
+      <!-- Global Actions & Unlimited Credits Badge -->
+      <div class="flex items-center gap-2">
+        <div class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="text-slate-300">Kredit AI:</span>
+          <span class="font-bold text-emerald-400">∞ Tanpa Had</span>
+        </div>
+        <button type="button" onclick="openGoogleSheetsModal()" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium border border-emerald-500/30 transition">
+          ☁️ Google Sheets Sync
+        </button>
+        <button type="button" onclick="openMonthlyReportModal()" class="px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 text-xs font-medium border border-purple-500/30 transition">
+          📄 Laporan Bulanan PDF
+        </button>
+        <button type="button" onclick="exportAllDataCSV()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition">
+          ⬇️ Eksport CSV
+        </button>
+        <button type="button" onclick="resetDemoData()" class="px-2.5 py-1.5 rounded-lg bg-slate-800/60 hover:bg-rose-950/60 text-slate-400 hover:text-rose-300 text-xs border border-slate-800 transition" title="Set semula data demo">
+          ↺ Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Workspace Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 space-y-6">
+
+    <!-- Unified Top KPI Strip (Shared Memory across ARA, HIRA, SAFA) -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 no-print">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <span>Jualan &amp; Invois (SAFA)</span>
+          <span class="text-emerald-400 font-semibold">Live Memory</span>
+        </div>
+        <div id="kpi-revenue" class="text-xl sm:text-2xl font-extrabold text-white">RM 0.00</div>
+        <div id="kpi-margin" class="text-xs text-emerald-400 mt-1">Untung Bersih: RM 0.00</div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <span>Pipeline Prospek (ARA)</span>
+          <span class="text-sky-400 font-semibold">CRM &amp; Ads</span>
+        </div>
+        <div id="kpi-leads" class="text-xl sm:text-2xl font-extrabold text-white">0 Prospek</div>
+        <div id="kpi-deals-value" class="text-xs text-sky-400 mt-1">Nilai Pipeline: RM 0</div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <span>Pasukan &amp; Gaji (HIRA)</span>
+          <span class="text-amber-400 font-semibold">KWSP/PERKESO</span>
+        </div>
+        <div id="kpi-staff" class="text-xl sm:text-2xl font-extrabold text-white">0 Staf</div>
+        <div id="kpi-payroll" class="text-xs text-amber-400 mt-1">Jumlah Gaji: RM 0.00</div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+          <span>e-Invois LHDN &amp; SST</span>
+          <span class="text-purple-400 font-semibold">MyInvois Ready</span>
+        </div>
+        <div id="kpi-einvoice" class="text-xl sm:text-2xl font-extrabold text-white">0 Disahkan</div>
+        <div id="kpi-sst" class="text-xs text-purple-400 mt-1">Anggaran SST (6%): RM 0.00</div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 1: KUASA C-SUITE (AI LEADERSHIP TEAM)                          -->
+    <!-- ===================================================================== -->
+    <section id="view-csuite" class="space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left Column: AI Leadership Chat & Briefing -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
+          <div>
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-4 border-b border-slate-800">
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                  <span>Pasukan Kepimpinan AI C-Suite</span>
+                  <span class="text-xs px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Read-Only Live Memory</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Membaca data secara langsung daripada modul ARA, HIRA &amp; SAFA tanpa had kredit.</p>
+              </div>
+              <!-- Agent Role Selector -->
+              <div class="flex gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                <button type="button" id="agent-ceo" onclick="selectAgent('CEO')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950">CEO</button>
+                <button type="button" id="agent-cmo" onclick="selectAgent('CMO')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white">CMO</button>
+                <button type="button" id="agent-chro" onclick="selectAgent('CHRO')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white">CHRO</button>
+                <button type="button" id="agent-cfo" onclick="selectAgent('CFO')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white">CFO</button>
+              </div>
+            </div>
+
+            <!-- Quick Briefing Prompts -->
+            <div class="my-3 flex flex-wrap gap-1.5">
+              <button type="button" onclick="askCSuite('Bagaimana prestasi keseluruhan perniagaan bulan ini?')" class="text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-full border border-slate-700 transition">
+                📊 Prestasi bisnes bulan ini?
+              </button>
+              <button type="button" onclick="askCSuite('Iklan Magic Ads mana paling berbaloi & status prospek WhatsApp?')" class="text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-full border border-slate-700 transition">
+                🚀 Prestasi Magic Ads &amp; Prospek
+              </button>
+              <button type="button" onclick="askCSuite('Siapa staf yang bercuti, lewat, atau ada tuntutan staf belum lulus?')" class="text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-full border border-slate-700 transition">
+                👥 Semak kehadiran &amp; gaji staf
+              </button>
+              <button type="button" onclick="askCSuite('Berapa aliran tunai, perbelanjaan resit & status e-Invois LHDN?')" class="text-xs bg-slate-800/90 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-full border border-slate-700 transition">
+                🧾 Aliran tunai &amp; e-Invois LHDN
+              </button>
+            </div>
+
+            <!-- Conversation Feed -->
+            <div id="csuite-chat-log" class="h-80 overflow-y-auto custom-scroll space-y-3 pr-1 py-2">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Input Box -->
+          <form id="csuite-form" onsubmit="handleCSuiteSubmit(event)" class="mt-3 pt-3 border-t border-slate-800 flex gap-2">
+            <input id="csuite-input" type="text" placeholder="Tanya CEO/CMO/CHRO/CFO Agent (cth: Berapa untung bersih & siapa cuti?)" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500" />
+            <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-sm transition">
+              Tanya AI
+            </button>
+          </form>
+        </div>
+
+        <!-- Right Column: Live Business Telemetry & Cross-Module Chart -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <div>
+                <h3 class="text-base font-bold text-white">Analitik Silang Modul (One Memory)</h3>
+                <p class="text-xs text-slate-400">Perbandingan Jualan, Kos Operasi &amp; Nilai Prospek</p>
+              </div>
+              <button type="button" onclick="speakBriefing()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 text-xs font-medium border border-slate-700 transition">
+                🔊 Voice AI Briefing
+              </button>
+            </div>
+            <div class="relative h-64 w-full mt-3">
+              <canvas id="csuiteChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Action Items Auto-Detected by AI -->
+          <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5">
+            <div class="text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">⚡ Cadangan Tindakan Segera (Auto-Brief)</div>
+            <ul id="csuite-action-list" class="space-y-1.5 text-xs text-slate-300">
+              <!-- Populated dynamically -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 2: KUASA ARA (SALES, MAGIC ADS, CREATIVE BANK & CRM)           -->
+    <!-- ===================================================================== -->
+    <section id="view-ara" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Magic Ads & Creative Bank Generator -->
+        <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white">✨ Magic Ads &amp; ARA Creative Bank</h2>
+              <p class="text-xs text-slate-400">Jana variasi copywriting iklan, idea visual &amp; peraturan autopilot tanpa tolakan kredit.</p>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-medium">Meta / TikTok Ready</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="ara-product" class="block text-xs text-slate-400 mb-1">Produk / Kempen Promosi</label>
+              <input id="ara-product" type="text" value="Kopi Kampung Caramel &amp; Croissant Panas S'Antik Cafe" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500" />
+            </div>
+            <div>
+              <label for="ara-platform" class="block text-xs text-slate-400 mb-1">Platform Sasaran</label>
+              <select id="ara-platform" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
+                <option value="Instagram Reels &amp; Facebook">Instagram Reels &amp; Facebook</option>
+                <option value="TikTok &amp; Threads">TikTok &amp; Threads</option>
+                <option value="WhatsApp Broadcast VIP">WhatsApp Broadcast VIP</option>
+              </select>
+            </div>
+            <div>
+              <label for="ara-angle" class="block text-xs text-slate-400 mb-1">Sudut Emosi (Marketing Angle)</label>
+              <select id="ara-angle" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500">
+                <option value="Santai Petang &amp; Port Lepak Vintage">Santai Petang &amp; Port Lepak Vintage</option>
+                <option value="Promosi Terhad / FOMO">Promosi Terhad / FOMO Minggu Ini</option>
+                <option value="Pakej Berkumpulan / Keluarga &amp; Katering">Pakej Berkumpulan / Keluarga &amp; Katering</option>
+              </select>
+            </div>
+            <div>
+              <label for="ara-offer" class="block text-xs text-slate-400 mb-1">Tawaran / Harga (CTA)</label>
+              <input id="ara-offer" type="text" value="Kombo RM15.90 sahaja (Jimat RM5) · Tempah di WhatsApp" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-sky-500" />
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="generateMagicAds()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold text-xs sm:text-sm transition">
+              ⚡ Jana 3 Variasi Magic Ads + Idea Visual
+            </button>
+            <button type="button" onclick="copyMagicAdsOutput()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700 transition">
+              📋 Salin Semua Teks Iklan
+            </button>
+          </div>
+
+          <!-- Generated Magic Ads Output -->
+          <div id="magic-ads-output" class="space-y-3 max-h-96 overflow-y-auto custom-scroll pr-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Right: CRM & WhatsApp Deal Pipeline -->
+        <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white">💬 CRM Prospek &amp; Automasi WhatsApp</h2>
+              <p class="text-xs text-slate-400">Jejak prospek dari iklan sehingga jadi jualan &amp; jana skrip follow-up segera.</p>
+            </div>
+            <button type="button" onclick="openModal('modal-lead')" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition">
+              + Tambah Prospek
+            </button>
+          </div>
+
+          <!-- Filter Pills -->
+          <div class="flex flex-wrap gap-1.5">
+            <button type="button" id="filter-lead-all" onclick="filterLeads('ALL')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500 text-slate-950">Semua</button>
+            <button type="button" id="filter-lead-new" onclick="filterLeads('New Lead')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-300 hover:text-white">New Lead</button>
+            <button type="button" id="filter-lead-qualified" onclick="filterLeads('Qualified')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-300 hover:text-white">Qualified</button>
+            <button type="button" id="filter-lead-won" onclick="filterLeads('Closed Won')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-300 hover:text-white">Closed Won</button>
+          </div>
+
+          <!-- CRM Leads List -->
+          <div id="ara-leads-list" class="space-y-2.5 max-h-96 overflow-y-auto custom-scroll pr-1">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 2B: Jadual Perancang Konten Mingguan (Reels, TikTok & Poster S'Antik Cafe) -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-white">🗓️ Jadual Perancang Konten Mingguan (Reels, TikTok &amp; Poster S'Antik Cafe)</h3>
+            <p class="text-xs text-slate-400">Rancang jadual konten 7 hari lengkap hook video, sudut visual kafe &amp; status muat naik.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="regenerateContentCalendar()" class="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 text-xs font-semibold transition">
+              ✨ Jana Idea Konten Baru 7 Hari
+            </button>
+            <button type="button" onclick="openModal('modal-content')" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-semibold transition">
+              + Tambah Slot Konten
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 text-xs">
+                <th class="py-2.5 px-2">Hari &amp; Masa</th>
+                <th class="py-2.5 px-2">Platform &amp; Format</th>
+                <th class="py-2.5 px-2">Tajuk / Hook Konten</th>
+                <th class="py-2.5 px-2">Arahan Visual / Shot</th>
+                <th class="py-2.5 px-2">Status</th>
+                <th class="py-2.5 px-2 text-right">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody id="ara-calendar-tbody" class="divide-y divide-slate-800/70">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 3: KUASA HIRA (HRIS, ATTENDANCE, LEAVE & STATUTORY PAYROLL)    -->
+    <!-- ===================================================================== -->
+    <section id="view-hira" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Staff Roster, Attendance & Statutory Payroll Table -->
+        <div class="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white">👥 Kuasa HIRA — Rekod Staf, Kehadiran &amp; Gaji Berkanun</h2>
+              <p class="text-xs text-slate-400">Kira automatik KWSP (11%/13%), PERKESO, EIS &amp; jana slip gaji bersih tanpa watermark.</p>
+            </div>
+            <button type="button" onclick="openModal('modal-staff')" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold text-xs transition">
+              + Tambah Staf
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 text-xs">
+                  <th class="py-2.5 px-2">Nama &amp; Jawatan</th>
+                  <th class="py-2.5 px-2">Status Kehadiran</th>
+                  <th class="py-2.5 px-2">Baki Cuti</th>
+                  <th class="py-2.5 px-2">Gaji Asas</th>
+                  <th class="py-2.5 px-2">Potongan (KWSP/SOCSO/EIS)</th>
+                  <th class="py-2.5 px-2">Gaji Bersih</th>
+                  <th class="py-2.5 px-2 text-right">Tindakan</th>
+                </tr>
+              </thead>
+              <tbody id="hira-staff-tbody" class="divide-y divide-slate-800/70">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right: Ask Lin HR AI Assistant & Pending Claims -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-white">🤖 Ask Lin — Pembantu AI HR</h3>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">Live HRIS</span>
+            </div>
+            <p class="text-xs text-slate-400">Tanya Lin tentang jadual syif, staf bercuti, atau kiraan KWSP pasukan anda.</p>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="askLin('Siapa bercuti atau lewat hari ini?')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg border border-slate-700">Siapa cuti/lewat?</button>
+              <button type="button" onclick="askLin('Berapa jumlah caruman KWSP & gaji bersih bulan ini?')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg border border-slate-700">Jumlah KWSP &amp; Gaji</button>
+              <button type="button" onclick="askLin('Senaraikan tuntutan staf staf yang belum diluluskan.')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg border border-slate-700">Semak Claim</button>
+            </div>
+            <div id="ask-lin-response" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 leading-relaxed min-h-[96px]">
+              Klik soalan pantas di atas atau taip soalan HR di bawah.
+            </div>
+            <form onsubmit="handleAskLinSubmit(event)" class="flex gap-2">
+              <input id="ask-lin-input" type="text" placeholder="Tanya Lin tentang staf..." class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-400" />
+              <button type="submit" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold text-xs">Tanya</button>
+            </form>
+          </div>
+
+          <!-- Staff Claims Box -->
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <h3 class="text-sm font-bold text-white">📑 Tuntutan (Claims) Staf</h3>
+            <div id="hira-claims-list" class="space-y-2 text-xs">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 4: KUASA SAFA (ACCOUNTING, DIGITAL SHOEBOX & LHDN E-INVOICE)   -->
+    <!-- ===================================================================== -->
+    <section id="view-safa" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Digital Shoebox Receipt AI & New Invoice/Expense Form -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white">📸 Digital Shoebox &amp; Rekod SAFA</h2>
+              <p class="text-xs text-slate-400">Simulasi imbasan resit AI atau rekod invois baharu lengkap SST 6% &amp; pengesahan MyInvois LHDN.</p>
+            </div>
+          </div>
+
+          <!-- Instant AI Receipt Simulator -->
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+            <div class="text-xs font-semibold text-purple-300">⚡ Simulasi Imbas Resit Pantas (AI Receipt Reader)</div>
+            <p class="text-[11px] text-slate-400">Klik contoh resit di bawah untuk melihat bagaimana AI mengisi draf perbelanjaan secara automatik:</p>
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <button type="button" onclick="simulateReceiptScan('Pembekal Biji Kopi Arabica Perlis', 480.00, 'Bahan Mentah Kafe', 'EXPENSE', true)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700">
+                ☕ Resit Biji Kopi (RM480)
+              </button>
+              <button type="button" onclick="simulateReceiptScan('TNB Elektrik &amp; Utiliti Kafe', 620.50, 'Utiliti &amp; Sewa', 'EXPENSE', true)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg border border-slate-700">
+                ⚡ Bil Utiliti (RM620.50)
+              </button>
+              <button type="button" onclick="simulateReceiptScan('Tempahan Katering Jabatan Kangar', 1850.00, 'Jualan Katering &amp; Acara', 'INCOME', true)" class="text-xs bg-slate-800 hover:bg-slate-700 text-emerald-300 px-2.5 py-1.5 rounded-lg border border-slate-700">
+                🍱 Invois Katering (RM1,850)
+              </button>
+            </div>
+          </div>
+
+          <!-- Manual / Pre-filled Ledger Entry Form -->
+          <form id="safa-form" onsubmit="handleSafaSubmit(event)" class="space-y-3">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="safa-type" class="block text-xs text-slate-400 mb-1">Jenis Transaksi</label>
+                <select id="safa-type" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white">
+                  <option value="INCOME">Jualan / e-Invois Masuk (+)</option>
+                  <option value="EXPENSE">Perbelanjaan / Resit Pembekal (-)</option>
+                </select>
+              </div>
+              <div>
+                <label for="safa-amount" class="block text-xs text-slate-400 mb-1">Jumlah (RM)</label>
+                <input id="safa-amount" type="number" step="0.01" required placeholder="150.00" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white" />
+              </div>
+            </div>
+
+            <div>
+              <label for="safa-party" class="block text-xs text-slate-400 mb-1">Pelanggan / Pembekal</label>
+              <input id="safa-party" type="text" required placeholder="Cth: Pelanggan Walk-in / Pembekal Susu Segar" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white" />
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="safa-category" class="block text-xs text-slate-400 mb-1">Kategori</label>
+                <input id="safa-category" type="text" required placeholder="Jualan F&amp;B / Bahan Mentah" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white" />
+              </div>
+              <div>
+                <label for="safa-sst" class="block text-xs text-slate-400 mb-1">Cukai SST (6%)</label>
+                <select id="safa-sst" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white">
+                  <option value="YES">Termasuk SST 6%</option>
+                  <option value="NO">Tiada SST (0%)</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-slate-950 font-bold text-xs sm:text-sm transition">
+              + Simpan Rekod &amp; Sahkan e-Invois MyInvois
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Ledger Table & LHDN e-Invoice Preview -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white">🧾 Lejar Perakaunan &amp; Status e-Invois LHDN</h2>
+              <p class="text-xs text-slate-400">Klik "Lihat e-Invois" untuk eksport JSON MyInvois atau cetak invois rasmi.</p>
+            </div>
+            <button type="button" onclick="window.print()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-700">
+              🖨️ Cetak / Simpan PDF
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 text-xs">
+                  <th class="py-2 px-2">No. Rujukan</th>
+                  <th class="py-2 px-2">Pelanggan / Pembekal</th>
+                  <th class="py-2 px-2">Kategori</th>
+                  <th class="py-2 px-2">Jumlah (RM)</th>
+                  <th class="py-2 px-2">SST (6%)</th>
+                  <th class="py-2 px-2">Status LHDN</th>
+                  <th class="py-2 px-2 text-right">Dokumen</th>
+                </tr>
+              </thead>
+              <tbody id="safa-ledger-tbody" class="divide-y divide-slate-800/70">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 5 (1A): POS & MENU KAFE S'ANTIK (AUTO-SYNC KE SAFA & STOK)     -->
+    <!-- ===================================================================== -->
+    <section id="view-pos" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left: Menu Grid -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-white">☕ POS &amp; Menu S'Antik Cafe</h2>
+              <p class="text-xs text-slate-400">Klik menu untuk masuk ke bakul pesanan. Jualan akan terus direkod ke lejar SAFA &amp; tolak stok dapur.</p>
+            </div>
+            <button type="button" onclick="openModal('modal-menu')" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition">
+              + Menu Baharu
+            </button>
+          </div>
+
+          <div id="pos-menu-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Right: Current Order Cart & Checkout -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div>
+                <h3 class="text-base font-bold text-white">🧾 Bakul Pesanan Semasa</h3>
+                <p class="text-xs text-slate-400">Auto-sahkan e-Invois Terkumpul LHDN &amp; kemas kini inventori</p>
+              </div>
+              <button type="button" onclick="clearPosCart()" class="text-xs text-rose-400 hover:underline">Kosongkan</button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="pos-table" class="block text-xs text-slate-400 mb-1">Meja / Jenis Pesanan</label>
+                <select id="pos-table" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white">
+                  <option value="Meja 01 (Dine-In)">Meja 01 (Dine-In)</option>
+                  <option value="Meja 02 (Dine-In)">Meja 02 (Dine-In)</option>
+                  <option value="Meja 05 VIP (Dine-In)">Meja 05 VIP (Dine-In)</option>
+                  <option value="Bungkus / Takeaway">Bungkus / Takeaway</option>
+                  <option value="Tempahan Grab / Panda">Tempahan Delivery</option>
+                </select>
+              </div>
+              <div>
+                <label for="pos-payment" class="block text-xs text-slate-400 mb-1">Kaedah Bayaran</label>
+                <select id="pos-payment" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs sm:text-sm text-white">
+                  <option value="QR DuitNow">QR DuitNow</option>
+                  <option value="Tunai (Cash)">Tunai (Cash)</option>
+                  <option value="Kad Debit / Kredit">Kad Debit / Kredit</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="pos-cart-items" class="space-y-2 max-h-60 overflow-y-auto custom-scroll pr-1">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <div class="border-t border-slate-800 pt-3 space-y-3">
+            <div class="space-y-1 text-xs">
+              <div class="flex justify-between text-slate-400">
+                <span>Subjumlah:</span>
+                <span id="pos-subtotal">RM 0.00</span>
+              </div>
+              <div class="flex justify-between text-slate-400">
+                <span>Cukai SST (6%):</span>
+                <span id="pos-sst">RM 0.00</span>
+              </div>
+              <div class="flex justify-between text-base font-extrabold text-white pt-1">
+                <span>Jumlah Bayaran:</span>
+                <span id="pos-total" class="text-emerald-400">RM 0.00</span>
+              </div>
+            </div>
+
+            <button type="button" onclick="checkoutPosOrder()" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm transition">
+              💳 Bayar &amp; Hantar ke Lejar SAFA + Tolak Stok
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 6 (1B): INVENTORI & STOK DAPUR (AMARAN STOK RENDAH KE AI)      -->
+    <!-- ===================================================================== -->
+    <section id="view-inv" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white">📦 Inventori &amp; Stok Dapur S'Antik Cafe</h2>
+            <p class="text-xs text-slate-400">Jejak baki bahan mentah secara langsung. Sebarang stok di bawah paras minimum akan memberi amaran kepada CEO &amp; CFO Agent.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="openModal('modal-inv')" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold text-xs transition">
+              + Tambah Item Stok
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 text-xs">
+                <th class="py-2.5 px-2">Bahan Mentah / Stok</th>
+                <th class="py-2.5 px-2">Kategori</th>
+                <th class="py-2.5 px-2">Baki Semasa</th>
+                <th class="py-2.5 px-2">Paras Minimum</th>
+                <th class="py-2.5 px-2">Kos Restock</th>
+                <th class="py-2.5 px-2">Status Stok</th>
+                <th class="py-2.5 px-2 text-right">Kemas Kini Pantas</th>
+              </tr>
+            </thead>
+            <tbody id="inv-tbody" class="divide-y divide-slate-800/70">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- MODULE 7 (1C): KALENDAR TEMPAHAN KATERING & ACARA VIP                 -->
+    <!-- ===================================================================== -->
+    <section id="view-booking" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-white">📅 Kalendar Tempahan Katering &amp; Acara VIP</h2>
+            <p class="text-xs text-slate-400">Disambung terus dengan prospek Qualified daripada modul ARA dan penjanaan invois deposit SAFA.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="syncQualifiedLeadsToBookings()" class="px-3 py-1.5 rounded-xl bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/30 font-semibold text-xs transition">
+              🔗 Tarik Prospek Qualified dari ARA
+            </button>
+            <button type="button" onclick="openModal('modal-booking')" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs transition">
+              + Tempahan Acara Baharu
+            </button>
+          </div>
+        </div>
+
+        <div id="booking-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- MODALS (ADD LEAD, ADD STAFF, PAYSLIP / E-INVOICE PREVIEW)             -->
+  <!-- ===================================================================== -->
+
+  <!-- Modal: Add CRM Lead -->
+  <div id="modal-lead" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Tambah Prospek Baharu (Kuasa ARA)</h3>
+        <button type="button" onclick="closeModal('modal-lead')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleAddLead(event)" class="space-y-3">
+        <div>
+          <label for="lead-name" class="block text-xs text-slate-400 mb-1">Nama Pelanggan / Syarikat</label>
+          <input id="lead-name" type="text" required placeholder="Cth: Cikgu Faridah (SMK Kangar)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div>
+          <label for="lead-phone" class="block text-xs text-slate-400 mb-1">No. WhatsApp (cth: 60123456789)</label>
+          <input id="lead-phone" type="text" required placeholder="60134567890" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div>
+          <label for="lead-interest" class="block text-xs text-slate-400 mb-1">Pakej / Produk Diminati</label>
+          <input id="lead-interest" type="text" required placeholder="Tempahan Hi-Tea 40 Pax" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="lead-value" class="block text-xs text-slate-400 mb-1">Nilai Anggaran (RM)</label>
+            <input id="lead-value" type="number" required placeholder="850" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="lead-stage" class="block text-xs text-slate-400 mb-1">Status Pipeline</label>
+            <select id="lead-stage" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white">
+              <option value="New Lead">New Lead</option>
+              <option value="Qualified">Qualified</option>
+              <option value="Closed Won">Closed Won</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-lead')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Batal</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-xs">Simpan Prospek</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Staff -->
+  <div id="modal-staff" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Tambah Staf Baharu (Kuasa HIRA)</h3>
+        <button type="button" onclick="closeModal('modal-staff')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleAddStaff(event)" class="space-y-3">
+        <div>
+          <label for="staff-name" class="block text-xs text-slate-400 mb-1">Nama Penuh Staf</label>
+          <input id="staff-name" type="text" required placeholder="Cth: Amirul Hakim" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div>
+          <label for="staff-role" class="block text-xs text-slate-400 mb-1">Jawatan</label>
+          <input id="staff-role" type="text" required placeholder="Barista Kanan / Penyelia Kafe" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="staff-salary" class="block text-xs text-slate-400 mb-1">Gaji Asas Bulanan (RM)</label>
+            <input id="staff-salary" type="number" required placeholder="2200" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="staff-leave" class="block text-xs text-slate-400 mb-1">Baki Cuti Tahunan (Hari)</label>
+            <input id="staff-leave" type="number" required value="12" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-staff')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Batal</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-semibold text-xs">Simpan Staf</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Document Preview (Payslip / LHDN e-Invoice / WhatsApp Script) -->
+  <div id="modal-doc" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <h3 id="modal-doc-title" class="text-base font-bold text-white">Pratonton Dokumen</h3>
+        <button type="button" onclick="closeModal('modal-doc')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <div id="modal-doc-body" class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs text-slate-200 whitespace-pre-wrap font-mono max-h-80 overflow-y-auto custom-scroll"></div>
+      <div class="flex justify-end gap-2">
+        <button type="button" onclick="copyModalDocText()" class="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-xs">📋 Salin Teks / JSON</button>
+        <button type="button" onclick="window.print()" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-200 text-xs border border-slate-700">🖨️ Cetak</button>
+        <button type="button" onclick="closeModal('modal-doc')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 text-xs">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Content Calendar Slot (2B) -->
+  <div id="modal-content" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Tambah Slot Jadual Konten (ARA)</h3>
+        <button type="button" onclick="closeModal('modal-content')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleAddContentSlot(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="cal-day" class="block text-xs text-slate-400 mb-1">Hari &amp; Masa</label>
+            <input id="cal-day" type="text" required placeholder="Cth: Isnin · 11:00 AM" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="cal-format" class="block text-xs text-slate-400 mb-1">Platform &amp; Format</label>
+            <select id="cal-format" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white">
+              <option value="IG Reels / TikTok (9:16)">IG Reels / TikTok (9:16)</option>
+              <option value="Poster Promosi FB/IG (4:5)">Poster Promosi FB/IG (4:5)</option>
+              <option value="Threads Storytelling">Threads Storytelling</option>
+              <option value="WhatsApp Status / Broadcast">WhatsApp Status / Broadcast</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="cal-hook" class="block text-xs text-slate-400 mb-1">Tajuk / Hook Konten</label>
+          <input id="cal-hook" type="text" required placeholder="Cth: Rahsia Buih Latte Art Baldu S'Antik Cafe" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div>
+          <label for="cal-visual" class="block text-xs text-slate-400 mb-1">Arahan Visual / Shot</label>
+          <input id="cal-visual" type="text" required placeholder="Cth: Macro shot espresso pour + bunyi ASMR mesin kopi" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-content')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Batal</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-xs">Simpan Slot</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add POS Menu Item (1A) -->
+  <div id="modal-menu" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Tambah Menu POS S'Antik Cafe</h3>
+        <button type="button" onclick="closeModal('modal-menu')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleAddMenuItem(event)" class="space-y-3">
+        <div>
+          <label for="menu-name" class="block text-xs text-slate-400 mb-1">Nama Menu</label>
+          <input id="menu-name" type="text" required placeholder="Cth: Kopi Vietnam Drip S'Antik" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="menu-category" class="block text-xs text-slate-400 mb-1">Kategori</label>
+            <select id="menu-category" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white">
+              <option value="Kopi &amp; Minuman">Kopi &amp; Minuman</option>
+              <option value="Pastri &amp; Pencuci Mulut">Pastri &amp; Pencuci Mulut</option>
+              <option value="Hidangan Utama">Hidangan Utama</option>
+            </select>
+          </div>
+          <div>
+            <label for="menu-price" class="block text-xs text-slate-400 mb-1">Harga (RM)</label>
+            <input id="menu-price" type="number" step="0.10" required placeholder="12.90" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-menu')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Batal</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-xs">Simpan Menu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Inventory Item (1B) -->
+  <div id="modal-inv" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Tambah Item Inventori Dapur</h3>
+        <button type="button" onclick="closeModal('modal-inv')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleAddInventory(event)" class="space-y-3">
+        <div>
+          <label for="inv-name" class="block text-xs text-slate-400 mb-1">Nama Bahan Mentah</label>
+          <input id="inv-name" type="text" required placeholder="Cth: Serbuk Matcha Uji Premium (kg)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label for="inv-qty" class="block text-xs text-slate-400 mb-1">Baki Semasa</label>
+            <input id="inv-qty" type="number" required placeholder="10" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="inv-min" class="block text-xs text-slate-400 mb-1">Paras Min.</label>
+            <input id="inv-min" type="number" required placeholder="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="inv-cost" class="block text-xs text-slate-400 mb-1">Kos Restock (RM)</label>
+            <input id="inv-cost" type="number" step="0.01" required placeholder="140" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-inv')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Batal</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-semibold text-xs">Simpan Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Catering / VIP Booking (1C) -->
+  <div id="modal-booking" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">Tambah Tempahan Katering / Acara VIP</h3>
+        <button type="button" onclick="closeModal('modal-booking')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+      <form onsubmit="handleAddBooking(event)" class="space-y-3">
+        <div>
+          <label for="bk-client" class="block text-xs text-slate-400 mb-1">Nama Pelanggan / Organisasi</label>
+          <input id="bk-client" type="text" required placeholder="Cth: Majlis Perbandaran Kangar" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="bk-date" class="block text-xs text-slate-400 mb-1">Tarikh &amp; Masa Acara</label>
+            <input id="bk-date" type="text" required placeholder="28 Okt 2026 · 3:00 PM" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="bk-pax" class="block text-xs text-slate-400 mb-1">Bilangan Pax</label>
+            <input id="bk-pax" type="number" required placeholder="50" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="bk-package" class="block text-xs text-slate-400 mb-1">Pakej Menu</label>
+            <input id="bk-package" type="text" required placeholder="Hi-Tea Klasik &amp; Kopi Bar" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+          <div>
+            <label for="bk-amount" class="block text-xs text-slate-400 mb-1">Jumlah Nilai (RM)</label>
+            <input id="bk-amount" type="number" required placeholder="1450" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('modal-booking')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Batal</button>
+          <button type="submit" class="px-4 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-semibold text-xs">Simpan Tempahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Google Sheets Cloud Database Sync (3B) -->
+  <div id="modal-gsheet" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scroll">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div>
+          <h3 class="text-base font-bold text-white">☁️ Sambungan Pangkalan Data Percuma Google Sheets</h3>
+          <p class="text-xs text-slate-400">Simpan semua rekod ARA, HIRA, SAFA, POS, Inventori &amp; Katering terus ke Google Sheets anda secara percuma.</p>
+        </div>
+        <button type="button" onclick="closeModal('modal-gsheet')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+
+      <div class="space-y-2">
+        <label for="gsheet-webhook-url" class="block text-xs font-semibold text-emerald-400">Langkah 1: Masukkan Web App URL Google Apps Script Anda</label>
+        <div class="flex gap-2">
+          <input id="gsheet-webhook-url" type="url" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" />
+          <button type="button" onclick="syncToGoogleSheetsNow()" class="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs whitespace-nowrap">
+            🔄 Sync ke Google Sheets
+          </button>
+        </div>
+        <p id="gsheet-sync-status" class="text-[11px] text-slate-400">Status: Sedia untuk disambungkan (atau muat turun JSON/CSV di bawah).</p>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-300">Langkah 2: Skrip Google Apps Script Percuma (Salin ke Extensions → Apps Script dalam Google Sheet)</span>
+          <button type="button" onclick="copyGoogleAppsScript()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-emerald-300 text-xs border border-slate-700">📋 Salin Kod Apps Script</button>
+        </div>
+        <pre id="gsheet-script-code" class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-300 font-mono overflow-x-auto max-h-48 custom-scroll">function doPost(e) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var payload = JSON.parse(e.postData.contents);
+  var tables = ['leads', 'staff', 'ledger', 'inventory', 'bookings', 'contentCalendar'];
+  tables.forEach(function(name) {
+    var sheet = ss.getSheetByName(name) || ss.insertSheet(name);
+    sheet.clearContents();
+    var rows = payload[name] || [];
+    if (rows.length > 0) {
+      var headers = Object.keys(rows[0]);
+      sheet.appendRow(headers);
+      rows.forEach(function(r) {
+        sheet.appendRow(headers.map(function(h) { return r[h]; }));
+      });
+    }
+  });
+  return ContentService.createTextOutput(JSON.stringify({ status: 'ok', syncedAt: new Date() }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="exportFullJSONBackup()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700">
+          💾 Muat Turun Backup JSON Penuh
+        </button>
+        <button type="button" onclick="closeModal('modal-gsheet')" class="px-4 py-1.5 rounded-xl bg-slate-800 text-slate-300 text-xs">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Official Monthly Printable / PDF Accounting Report (3C) -->
+  <div id="modal-monthly-report" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full p-6 space-y-4 max-h-[92vh] overflow-y-auto custom-scroll">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 no-print">
+        <div>
+          <h3 class="text-base font-bold text-white">📄 Laporan Kewangan &amp; Operasi Bulanan Rasmi — S'Antik Cafe</h3>
+          <p class="text-xs text-slate-400">Format rasmi sedia untuk dicetak atau disimpan sebagai PDF bagi fail perakaunan &amp; LHDN.</p>
+        </div>
+        <button type="button" onclick="closeModal('modal-monthly-report')" class="text-slate-400 hover:text-white text-sm">✕</button>
+      </div>
+
+      <div id="monthly-report-content" class="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-4 text-xs sm:text-sm text-slate-200">
+        <!-- Populated dynamically by JS -->
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 no-print">
+        <button type="button" onclick="copyMonthlyReportText()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700">📋 Salin Laporan</button>
+        <button type="button" onclick="window.print()" class="px-4 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-slate-950 font-bold text-xs">🖨️ Cetak / Simpan PDF Rasmi</button>
+        <button type="button" onclick="closeModal('modal-monthly-report')" class="px-3 py-1.5 rounded-xl bg-slate-800 text-slate-400 text-xs">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-emerald-500 text-slate-950 font-semibold text-xs px-4 py-2.5 rounded-xl shadow-xl"></div>
+
+  <script>
+    const STORAGE_KEY = 'kuasa_os_free_santik_v1';
+    let currentAgent = 'CEO';
+    let currentLeadFilter = 'ALL';
+    let csuiteChartInstance = null;
+
+    const DEFAULT_STATE = {
+      leads: [
+        { id: 'L1', name: 'Puan Nurul Huda (Homestay & Event Kangar)', phone: '60124567890', interest: 'Katering Hi-Tea & Kopi Bar (50 Pax)', value: 1450, stage: 'Qualified', source: 'Magic Ads · IG Reels' },
+        { id: 'L2', name: 'Encik Hafiz (Kelab Kereta Klasik Perlis)', phone: '60198765432', interest: 'Tempahan Gathering Minggu Depan (35 Pax)', value: 980, stage: 'New Lead', source: 'Magic Ads · Facebook' },
+        { id: 'L3', name: 'Cikgu Azlina (SMK Derma)', phone: '60139988776', interest: 'Set Pastri & Kopi Mesyuarat Guru', value: 640, stage: 'Closed Won', source: 'WhatsApp Broadcast' },
+        { id: 'L4', name: 'Dr. Syafiq (Klinik Pakar Kangar)', phone: '60172233445', interest: 'Langganan Kopi Mingguan Staf Klinik', value: 1200, stage: 'Qualified', source: 'Magic Ads · Threads' }
+      ],
+      staff: [
+        { id: 'S1', name: 'Aina Rahman', role: 'Penyelia Kafe & Barista Kanan', status: 'Hadir (08:52 AM)', leaveLeft: 9, basic: 2400 },
+        { id: 'S2', name: 'Hakim Zulkifli', role: 'Chef Pastri & Dapur Panas', status: 'Hadir (08:58 AM)', leaveLeft: 11, basic: 2200 },
+        { id: 'S3', name: 'Mei Ling', role: 'Juruwang & Khidmat Pelanggan', status: 'Cuti Tahunan', leaveLeft: 7, basic: 1850 },
+        { id: 'S4', name: 'Danial Fikri', role: 'Barista & Kru Operasi', status: 'Hadir (09:04 AM · Lewat 4m)', leaveLeft: 12, basic: 1750 }
+      ],
+      claims: [
+        { id: 'C1', staffName: 'Hakim Zulkifli', item: 'Beli stok kecemasan mentega & vanila', amount: 86.50, status: 'Menunggu Kelulusan' },
+        { id: 'C2', staffName: 'Aina Rahman', item: 'Tuntutan minyak penghantaran katering Kangar', amount: 45.00, status: 'Diluluskan' }
+      ],
+      ledger: [
+        { id: 'INV-2026-101', party: 'Jualan Kaunter & Dine-In S\'Antik Cafe (Minggu 1-3)', category: 'Jualan F&B Kafe', type: 'INCOME', amount: 18450.00, sst: 1044.34, status: 'MyInvois Validated' },
+        { id: 'INV-2026-102', party: 'SMK Derma (Pakej Kopi & Pastri Guru)', category: 'Jualan Katering', type: 'INCOME', amount: 640.00, sst: 36.23, status: 'MyInvois Validated' },
+        { id: 'INV-2026-103', party: ' Pejabat Daerah Kangar (Tempahan VIP)', category: 'Jualan Katering', type: 'INCOME', amount: 2150.00, sst: 121.70, status: 'MyInvois Validated' },
+        { id: 'BILL-2026-041', party: ' Artizan Coffee Roasters & Susu Segar', category: 'Bahan Mentah Kafe', type: 'EXPENSE', amount: 4280.00, sst: 242.26, status: 'Resit Disahkan AI' },
+        { id: 'BILL-2026-042', party: 'TNB, Air & Internet Fiber Kafe', category: 'Utiliti & Operasi', type: 'EXPENSE', amount: 940.00, sst: 53.21, status: 'Resit Disahkan AI' }
+      ],
+      posMenu: [
+        { id: 'M1', name: 'Kopi Kampung Caramel Latte', category: 'Kopi & Minuman', price: 11.90, stockId: 'INV1' },
+        { id: 'M2', name: 'S\'Antik Signature Vintage Latte', category: 'Kopi & Minuman', price: 12.90, stockId: 'INV1' },
+        { id: 'M3', name: 'Artisanal Uji Matcha Latte', category: 'Kopi & Minuman', price: 13.90, stockId: 'INV2' },
+        { id: 'M4', name: 'Croissant Butter Panas', category: 'Pastri & Pencuci Mulut', price: 8.50, stockId: 'INV3' },
+        { id: 'M5', name: 'Set Nasi Lemak Ayam Berempah Kafe', category: 'Hidangan Utama', price: 16.90, stockId: 'INV4' },
+        { id: 'M6', name: 'Kek Batik Indulgence S\'Antik', category: 'Pastri & Pencuci Mulut', price: 10.90, stockId: 'INV3' }
+      ],
+      posCart: [
+        { id: 'M1', name: 'Kopi Kampung Caramel Latte', price: 11.90, qty: 2, stockId: 'INV1' },
+        { id: 'M4', name: 'Croissant Butter Panas', price: 8.50, qty: 2, stockId: 'INV3' }
+      ],
+      inventory: [
+        { id: 'INV1', name: 'Biji Kopi Arabica House Blend (kg)', category: 'Bar & Kopi', qty: 6, minQty: 5, restockCost: 240.00 },
+        { id: 'INV2', name: 'Susu Segar Full Cream Barista (katon)', category: 'Bar & Kopi', qty: 3, minQty: 4, restockCost: 180.00 },
+        { id: 'INV3', name: 'Doh Pastri & Croissant Mentega (kotak)', category: 'Dapur Pastri', qty: 2, minQty: 3, restockCost: 210.00 },
+        { id: 'INV4', name: 'Bahan Mentah Dapur Panas & Rempah (set)', category: 'Dapur Panas', qty: 8, minQty: 3, restockCost: 320.00 },
+        { id: 'INV5', name: 'Cawan Kertas & Pembungkusan S\'Antik (pek)', category: 'Pembungkusan', qty: 12, minQty: 4, restockCost: 95.00 }
+      ],
+      bookings: [
+        { id: 'BK-101', client: 'Puan Nurul Huda (Homestay & Event Kangar)', date: '25 Okt 2026 · 3:00 PM', pax: 50, package: 'Katering Hi-Tea & Kopi Bar', amount: 1450, status: 'Deposit Dibayar', invoiced: false },
+        { id: 'BK-102', client: 'Dr. Syafiq (Klinik Pakar Kangar)', date: '29 Okt 2026 · 9:00 AM', pax: 30, package: 'Langganan Kopi & Pastri Pagi', amount: 1200, status: 'Disahkan', invoiced: false },
+        { id: 'BK-103', client: 'Kelab Usahawan Muda Perlis', date: '02 Nov 2026 · 8:00 PM', pax: 45, package: 'Malam Networking & Barista Live', amount: 1680, status: 'Menunggu Deposit', invoiced: false }
+      ],
+      contentCalendar: [
+        { id: 'CAL1', day: 'Isnin · 10:30 AM', format: 'IG Reels / TikTok (9:16)', hook: 'ASMR Tarik Espresso & Rahsia Kopi Kampung Caramel S\'Antik', visual: 'Macro shot crema kopi + bunyi mesin espresso & muzik jazz vintage', status: 'Siap Dirakam' },
+        { id: 'CAL2', day: 'Selasa · 12:30 PM', format: 'Poster Promosi FB/IG (4:5)', hook: 'Kombo Santai Petang RM15.90 (Kopi + Croissant Panas)', visual: 'Flat-lay atas meja kayu antik dengan cahaya matahari petang', status: 'Dirancang' },
+        { id: 'CAL3', day: 'Rabu · 3:00 PM', format: 'Threads Storytelling', hook: 'Kenapa suasana kafe tenang bantu idea bisnes mengalir laju?', visual: 'Gambar sudut kerja S\'Antik Cafe bersama secawan latte panas', status: 'Dirancang' },
+        { id: 'CAL4', day: 'Khamis · 5:00 PM', format: 'IG Reels / TikTok (9:16)', hook: 'Di Sebalik Tabir: Persiapan Katering Hi-Tea 50 Pax di Kangar', visual: 'Rakaman pantas kru menyusun pastri & kopi bar bergerak', status: 'Dirancang' },
+        { id: 'CAL5', day: 'Jumaat · 11:00 AM', format: 'WhatsApp Status / Broadcast', hook: 'Slot Meja VIP & Katering Hujung Minggu (Tinggal 3 Slot)', visual: 'Poster minimalis bersama pautan terus WhatsApp tempahan', status: 'Siap Dirakam' },
+        { id: 'CAL6', day: 'Sabtu · 2:00 PM', format: 'IG Reels / TikTok (9:16)', hook: 'Reaksi Pelanggan Pertama Kali Cuba Kek Batik Indulgence & Matcha', visual: 'Temu bual santai pelanggan di meja kafe (vibe mesra komuniti)', status: 'Dirancang' },
+        { id: 'CAL7', day: 'Ahad · 8:00 PM', format: 'Poster Promosi FB/IG (4:5)', hook: 'Menu Istimewa Minggu Hadapan & Jemputan Lepak Malam', visual: 'Suasana lampu gantung hangat S\'Antik Cafe waktu malam', status: 'Dirancang' }
+      ],
+      gsheetWebhookUrl: '',
+      chatHistory: [
+        {
+          role: 'CEO',
+          question: 'Ringkasan Eksekutif Harian (Semua 7 Modul)',
+          answer: 'Selamat datang ke KuasaOS Free Edition v2! Sistem One Memory kini menyatukan C-Suite AI, ARA (Magic Ads, CRM & Jadual Konten 7 Hari), HIRA (HR & Gaji KWSP), SAFA (Akaun & e-Invois LHDN), POS Kafe, Inventori Dapur, dan Kalendar Katering VIP.',
+          sources: 'Read: ara_leads, content_calendar, hira_staff, safa_ledger, pos_menu, inventory, vip_bookings'
+        }
+      ]
+    };
+
+    let state = loadState();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.leads) && Array.isArray(parsed.staff) && Array.isArray(parsed.ledger)) {
+            return Object.assign(JSON.parse(JSON.stringify(DEFAULT_STATE)), parsed);
+          }
+        }
+      } catch (e) {
+        // Fallback to in-memory default state
+      }
+      return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        // Ignore storage errors in restricted iframes
+      }
+    }
+
+    function esc(v) {
+      return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+
+    function uniqueId(prefix, list) {
+      let id;
+      do { id = prefix + Math.floor(100 + Math.random() * 9000); }
+      while ((list || []).some(x => x.id === id));
+      return id;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      setTimeout(() => { el.classList.add('hidden'); }, 2800);
+    }
+
+    function copyTextSafe(text, label) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(label || 'Berjaya disalin ke papan keratan!');
+        }).catch(() => fallbackCopy(text, label));
+      } else {
+        fallbackCopy(text, label);
+      }
+    }
+
+    function fallbackCopy(text, label) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      showToast(label || 'Berjaya disalin!');
+    }
+
+    // Calculate statutory deductions (Malaysia EPF 11%, SOCSO ~0.5%, EIS ~0.2%)
+    function calcPayroll(basic) {
+      const epfEmployee = Math.round(basic * 0.11 * 100) / 100;
+      const epfEmployer = Math.round(basic * 0.13 * 100) / 100;
+      const socso = Math.round(basic * 0.005 * 100) / 100;
+      const eis = Math.round(basic * 0.002 * 100) / 100;
+      const totalDeduction = Math.round((epfEmployee + socso + eis) * 100) / 100;
+      const netPay = Math.round((basic - totalDeduction) * 100) / 100;
+      return { epfEmployee, epfEmployer, socso, eis, totalDeduction, netPay };
+    }
+
+    function computeMetrics() {
+      const totalIncome = state.ledger.filter(x => x.type === 'INCOME').reduce((s, x) => s + Number(x.amount), 0);
+      const totalExpense = state.ledger.filter(x => x.type === 'EXPENSE').reduce((s, x) => s + Number(x.amount), 0);
+      const totalPayroll = state.staff.reduce((s, x) => s + Number(x.basic), 0);
+      const netProfit = totalIncome - totalExpense - totalPayroll;
+      const totalSST = state.ledger.reduce((s, x) => s + Number(x.sst || 0), 0);
+      const validatedInvoices = state.ledger.filter(x => x.type === 'INCOME').length;
+      const pipelineValue = state.leads.reduce((s, x) => s + Number(x.value), 0);
+      return { totalIncome, totalExpense, totalPayroll, netProfit, totalSST, validatedInvoices, pipelineValue };
+    }
+
+    function renderAll() {
+      const m = computeMetrics();
+      document.getElementById('kpi-revenue').textContent = 'RM ' + m.totalIncome.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('kpi-margin').textContent = 'Untung Bersih (Selepas Gaji & Kos): RM ' + m.netProfit.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById('kpi-leads').textContent = state.leads.length + ' Prospek Aktif';
+      document.getElementById('kpi-deals-value').textContent = 'Nilai Pipeline: RM ' + m.pipelineValue.toLocaleString('en-MY');
+      document.getElementById('kpi-staff').textContent = state.staff.length + ' Staf Berdaftar';
+      document.getElementById('kpi-payroll').textContent = 'Jumlah Gaji Asas: RM ' + m.totalPayroll.toLocaleString('en-MY', { minimumFractionDigits: 2 });
+      document.getElementById('kpi-einvoice').textContent = m.validatedInvoices + ' e-Invois LHDN';
+      document.getElementById('kpi-sst').textContent = 'Anggaran SST (6%): RM ' + m.totalSST.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      renderCSuite();
+      renderAraLeads();
+      renderContentCalendar();
+      renderHira();
+      renderSafa();
+      renderPos();
+      renderInventory();
+      renderBookings();
+      updateCSuiteChart();
+    }
+
+    function switchModule(mod) {
+      const mods = ['csuite', 'ara', 'hira', 'safa', 'pos', 'inv', 'booking'];
+      mods.forEach(m => {
+        const view = document.getElementById('view-' + m);
+        const tab = document.getElementById('tab-' + m);
+        if (m === mod) {
+          view.classList.remove('hidden');
+          tab.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm transition whitespace-nowrap bg-emerald-500 text-slate-950 font-semibold';
+        } else {
+          view.classList.add('hidden');
+          tab.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition whitespace-nowrap text-slate-300 hover:text-white';
+        }
+      });
+      if (mod === 'csuite') {
+        updateCSuiteChart();
+      }
+    }
+
+    // =========================================================================
+    // C-SUITE AI FUNCTIONS
+    // =========================================================================
+    function selectAgent(agent) {
+      currentAgent = agent;
+      ['CEO', 'CMO', 'CHRO', 'CFO'].forEach(a => {
+        const btn = document.getElementById('agent-' + a.toLowerCase());
+        if (a === agent) {
+          btn.className = 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500 text-slate-950';
+        } else {
+          btn.className = 'px-2.5 py-1 rounded-lg text-xs font-medium text-slate-300 hover:text-white';
+        }
+      });
+      showToast('Beralih kepada ' + agent + ' Agent');
+    }
+
+    function renderCSuite() {
+      const log = document.getElementById('csuite-chat-log');
+      log.innerHTML = state.chatHistory.map(item => `
+        <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-3.5 space-y-1.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-emerald-400">${esc(item.role)} Agent · Kuasa C-Suite</span>
+            <span class="text-[11px] text-slate-400 font-mono">${esc(item.sources)}</span>
+          </div>
+          <div class="text-xs font-semibold text-slate-300">Soalan: "${esc(item.question)}"</div>
+          <div class="text-xs sm:text-sm text-slate-100 leading-relaxed">${esc(item.answer)}</div>
+        </div>
+      `).join('');
+      log.scrollTop = log.scrollHeight;
+
+      // Action items
+      const m = computeMetrics();
+      const pendingClaims = state.claims.filter(c => c.status !== 'Diluluskan').length;
+      const qualifiedLeads = state.leads.filter(l => l.stage === 'Qualified').length;
+      const lowStockItems = (state.inventory || []).filter(i => Number(i.qty) <= Number(i.minQty));
+      const upcomingBookings = (state.bookings || []).length;
+      const actionList = document.getElementById('csuite-action-list');
+      actionList.innerHTML = `
+        <li class="flex items-center justify-between">
+          <span>• Follow-up ${qualifiedLeads} prospek <strong>Qualified</strong> &amp; ${upcomingBookings} tempahan katering VIP</span>
+          <button type="button" onclick="switchModule('ara')" class="text-emerald-400 hover:underline font-medium">Buka ARA →</button>
+        </li>
+        <li class="flex items-center justify-between">
+          <span>• ${pendingClaims} tuntutan staf di HIRA &amp; ⚠️ <strong>${lowStockItems.length} stok dapur rendah</strong> perlu restock</span>
+          <button type="button" onclick="switchModule('hira')" class="text-amber-400 hover:underline font-medium">Semak HIRA →</button>
+        </li>
+        <li class="flex items-center justify-between">
+          <span>• Baki Untung Bersih semasa ialah <strong>RM ${m.netProfit.toFixed(2)}</strong> (${m.validatedInvoices} e-Invois sah)</span>
+          <button type="button" onclick="switchModule('safa')" class="text-purple-400 hover:underline font-medium">Lejar SAFA →</button>
+        </li>
+      `;
+    }
+
+    function askCSuite(questionText) {
+      const m = computeMetrics();
+      const q = questionText.toLowerCase();
+      let answer = '';
+      let sources = '';
+
+      if (q.includes('iklan') || q.includes('prospek') || q.includes('ads') || q.includes('whatsapp') || currentAgent === 'CMO') {
+        const won = state.leads.filter(l => l.stage === 'Closed Won').length;
+        const qual = state.leads.filter(l => l.stage === 'Qualified');
+        answer = `Berdasarkan rekod langsung Kuasa ARA: Terdapat ${state.leads.length} prospek bernilai keseluruhan RM ${m.pipelineValue.toLocaleString('en-MY')}. Sebanyak ${qual.length} prospek berstatus Qualified (${qual.map(x => x.name).join(', ')}) sedia untuk ditutup hari ini, dan ${won} jualan telah berjaya ditutup. Kempen Magic Ads IG Reels & Facebook mencatatkan kos per prospek terendah minggu ini.`;
+        sources = `Read: ara_leads (${state.leads.length} records), magic_ads_campaigns`;
+      } else if (q.includes('staf') || q.includes('cuti') || q.includes('gaji') || q.includes('claim') || currentAgent === 'CHRO') {
+        const onLeave = state.staff.filter(s => s.status.toLowerCase().includes('cuti')).map(s => s.name);
+        const pending = state.claims.filter(c => c.status !== 'Diluluskan');
+        answer = `Laporan HR (Kuasa HIRA): Daripada ${state.staff.length} staf aktif, staf yang sedang bercuti ialah ${onLeave.length ? onLeave.join(', ') : 'tiada'}. Jumlah gaji asas bulanan ialah RM ${m.totalPayroll.toFixed(2)} (termasuk kiraan automatik KWSP 11% pekerja & 13% majikan). Terdapat ${pending.length} tuntutan staf menunggu kelulusan berjumlah RM ${pending.reduce((a,b)=>a+b.amount,0).toFixed(2)}.`;
+        sources = `Read: hira_staff (${state.staff.length} records), hira_claims (${state.claims.length} records)`;
+      } else if (q.includes('tunai') || q.includes('invois') || q.includes('akaun') || q.includes('untung') || currentAgent === 'CFO') {
+        answer = `Laporan Kewangan (Kuasa SAFA): Jumlah hasil terkumpul ialah RM ${m.totalIncome.toFixed(2)} berbanding perbelanjaan resit RM ${m.totalExpense.toFixed(2)} dan kos gaji RM ${m.totalPayroll.toFixed(2)}, menghasilkan Untung Bersih RM ${m.netProfit.toFixed(2)}. Anggaran SST 6% ialah RM ${m.totalSST.toFixed(2)} dan kesemua ${m.validatedInvoices} invois jualan berstatus MyInvois Validated.`;
+        sources = `Read: safa_ledger (${state.ledger.length} records), myinvois_status`;
+      } else {
+        answer = `Ringkasan CEO (One Memory): Bulan ini perniagaan mencatatkan hasil RM ${m.totalIncome.toFixed(2)} dan Untung Bersih RM ${m.netProfit.toFixed(2)}. Di bahagian jualan (ARA), terdapat pipeline bernilai RM ${m.pipelineValue.toLocaleString('en-MY')} daripada ${state.leads.length} prospek. Di bahagian operasi (HIRA), ${state.staff.length} staf berdaftar dengan ${state.claims.filter(c=>c.status!=='Diluluskan').length} claim menunggu kelulusan.`;
+        sources = `Read: ara_leads (${state.leads.length}), hira_staff (${state.staff.length}), safa_ledger (${state.ledger.length})`;
+      }
+
+      state.chatHistory.push({
+        role: currentAgent,
+        question: questionText,
+        answer: answer,
+        sources: sources
+      });
+      saveState();
+      renderCSuite();
+    }
+
+    function handleCSuiteSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('csuite-input');
+      const val = input.value.trim();
+      if (!val) return;
+      input.value = '';
+      askCSuite(val);
+    }
+
+    function speakBriefing() {
+      const m = computeMetrics();
+      const text = `Ringkasan Suara Kuasa OS. Jumlah jualan semasa ialah RM ${m.totalIncome.toFixed(0)}, untung bersih RM ${m.netProfit.toFixed(0)}, dan terdapat ${state.leads.length} prospek aktif bernilai RM ${m.pipelineValue}.`;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'ms-MY';
+        window.speechSynthesis.speak(utter);
+        showToast('🔊 Memainkan ringkasan suara AI...');
+      } else {
+        showToast(text);
+      }
+    }
+
+    function updateCSuiteChart() {
+      const ctx = document.getElementById('csuiteChart');
+      if (!ctx || typeof Chart === 'undefined') return;
+      const m = computeMetrics();
+      const dataValues = [m.totalIncome, m.totalExpense, m.totalPayroll, m.netProfit, m.pipelineValue];
+      if (csuiteChartInstance) {
+        csuiteChartInstance.data.datasets[0].data = dataValues;
+        csuiteChartInstance.update();
+        return;
+      }
+      csuiteChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Jualan (SAFA)', 'Kos Resit (SAFA)', 'Gaji (HIRA)', 'Untung Bersih', 'Pipeline (ARA)'],
+          datasets: [{
+            label: 'RM',
+            data: dataValues,
+            backgroundColor: [
+              'rgba(16, 185, 129, 0.75)',
+              'rgba(244, 63, 94, 0.75)',
+              'rgba(251, 191, 36, 0.75)',
+              'rgba(52, 211, 153, 0.9)',
+              'rgba(56, 189, 248, 0.75)'
+            ],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              ticks: { color: '#94a3b8', font: { size: 11 } },
+              grid: { color: 'rgba(148, 163, 184, 0.1)' }
+            },
+            x: {
+              ticks: { color: '#cbd5e1', font: { size: 11 } },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // KUASA ARA: MAGIC ADS & CRM FUNCTIONS
+    // =========================================================================
+    function generateMagicAds() {
+      const prod = esc(document.getElementById('ara-product').value.trim() || 'Produk Istimewa S\'Antik Cafe');
+      const plat = document.getElementById('ara-platform').value;
+      const angle = document.getElementById('ara-angle').value;
+      const offer = esc(document.getElementById('ara-offer').value.trim() || 'Klik link WhatsApp sekarang');
+
+      const variations = [
+        {
+          title: `Variasi 1 — Hook Emosi & Storytelling (${plat})`,
+          copy: `☕ Pernah rasa penat seharian bekerja dan perlukan sudut tenang dengan aroma kopi sebenar?\n\nDi S'Antik Cafe, kami sediakan ${prod} khas untuk suasana ${angle}.\n\n✨ Kenapa pelanggan tetap kami ulang setiap minggu?\n• Dibancuh segar & bahan berkualiti premium\n• Suasana klasik yang tenang untuk santai atau bincang bisnes\n• ${offer}\n\n📲 Klik butang WhatsApp di bawah untuk tempah meja atau pra-pesanan sekarang!`,
+          visual: `Visual AI Prompt: Close-up artisan shot of ${prod} on a warm vintage wooden cafe table, golden afternoon sunbeams, rising steam, cozy S'Antik bokeh background (9:16 Reels / 4:5 Feed).`,
+          autopilot: `Autopilot Rule: Jika CTR > 2.5% selepas 48 jam, kekalkan bajet & gandakan ke Instagram Reels.`
+        },
+        {
+          title: `Variasi 2 — Direct Offer & FOMO Pantas (${plat})`,
+          copy: `🔥 PROMOSI KHAS MINGGU INI: ${prod}!\n\nTak perlu tunggu hujung bulan untuk nikmati hidangan kegemaran ramai. Sesuai untuk ${angle}.\n\n🎁 Tawaran Istimewa:\n👉 ${offer}\n\nSlot & stok harian adalah terhad supaya kualiti kekal terjaga. Tekan pautan WhatsApp sekarang sebelum habis!`,
+          visual: `Visual AI Prompt: Dynamic action shot pouring rich espresso / caramel drizzle over ${prod}, crisp macro texture, clean negative space at top for bold promo headline.`,
+          autopilot: `Autopilot Rule: Hentikan sementara (pause) iklan jika kos per prospek WhatsApp melebihi RM4.50.`
+        },
+        {
+          title: `Variasi 3 — Bukti Sosial & Jemputan Komuniti (${plat})`,
+          copy: `"Port paling selesa di Kangar untuk lepak petang sambil pekena ${prod}!"\n\nSama ada anda datang bersama keluarga, rakan sekerja, atau mahu tempah pakej berkumpulan (${angle}), pasukan kami sedia layan anda.\n\n✅ ${offer}\n📍 Lokasi mudah akses & parkir selesa.`,
+          visual: `Visual AI Prompt: Wide lifestyle cafe flat-lay showing ${prod} shared among friends at a classic wooden table, warm pendant lighting, inviting atmosphere.`,
+          autopilot: `Autopilot Rule: Alihkan 30% bajet ke audiens Lookalike pelanggan WhatsApp CRM S'Antik.`
+        }
+      ];
+
+      const container = document.getElementById('magic-ads-output');
+      container.innerHTML = variations.map((v, idx) => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-sky-400">${v.title}</span>
+            <button type="button" onclick="copySingleAd(${idx})" class="text-[11px] px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">Salin Copy</button>
+          </div>
+          <p id="ad-copy-${idx}" class="text-xs text-slate-200 whitespace-pre-line leading-relaxed">${v.copy}</p>
+          <div class="text-[11px] text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 rounded-lg p-2">
+            🎨 <strong>Prompt Visual Creative Bank:</strong> ${v.visual}
+          </div>
+          <div class="text-[11px] text-amber-300">
+            🤖 ${v.autopilot}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function copySingleAd(idx) {
+      const el = document.getElementById('ad-copy-' + idx);
+      if (el) copyTextSafe(el.textContent, 'Teks iklan Variasi ' + (idx + 1) + ' disalin!');
+    }
+
+    function copyMagicAdsOutput() {
+      const container = document.getElementById('magic-ads-output');
+      if (container) copyTextSafe(container.innerText, 'Semua variasi Magic Ads berjaya disalin!');
+    }
+
+    function filterLeads(stage) {
+      currentLeadFilter = stage;
+      const map = { 'ALL': 'filter-lead-all', 'New Lead': 'filter-lead-new', 'Qualified': 'filter-lead-qualified', 'Closed Won': 'filter-lead-won' };
+      Object.keys(map).forEach(k => {
+        const btn = document.getElementById(map[k]);
+        if (!btn) return;
+        btn.className = (k === stage)
+          ? 'px-2.5 py-1 rounded-lg text-xs font-semibold bg-sky-500 text-slate-950'
+          : 'px-2.5 py-1 rounded-lg text-xs bg-slate-800 text-slate-300 hover:text-white';
+      });
+      renderAraLeads();
+    }
+
+    function renderAraLeads() {
+      const list = document.getElementById('ara-leads-list');
+      const filtered = currentLeadFilter === 'ALL'
+        ? state.leads
+        : state.leads.filter(l => l.stage === currentLeadFilter);
+
+      if (!filtered.length) {
+        list.innerHTML = `<div class="text-xs text-slate-500 py-6 text-center">Tiada prospek dalam kategori ini.</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(lead => {
+        const badgeColor = lead.stage === 'Closed Won'
+          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+          : lead.stage === 'Qualified'
+          ? 'bg-amber-500/15 text-amber-300 border-amber-500/30'
+          : 'bg-sky-500/15 text-sky-300 border-sky-500/30';
+
+        return `
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-bold text-sm text-white">${esc(lead.name)}</span>
+                <span class="text-[11px] px-2 py-0.5 rounded-full border ${badgeColor}">${esc(lead.stage)}</span>
+              </div>
+              <div class="text-xs text-slate-300">${esc(lead.interest)} · <strong class="text-emerald-400">RM ${Number(lead.value).toLocaleString('en-MY')}</strong></div>
+              <div class="text-[11px] text-slate-500">Sumber: ${esc(lead.source)} · Tel: ${esc(lead.phone)}</div>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" onclick="previewWhatsAppScript('${esc(lead.id)}')" class="px-2.5 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-medium">
+                💬 Skrip WhatsApp
+              </button>
+              <button type="button" onclick="advanceLeadStage('${esc(lead.id)}')" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs border border-slate-700">
+                ⏩ Tukar Status
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function advanceLeadStage(id) {
+      const order = ['New Lead', 'Qualified', 'Closed Won'];
+      const lead = state.leads.find(l => l.id === id);
+      if (!lead) return;
+      const nextIdx = (order.indexOf(lead.stage) + 1) % order.length;
+      lead.stage = order[nextIdx];
+      saveState();
+      renderAll();
+      showToast(`Status ${lead.name} dikemas kini ke: ${lead.stage}`);
+    }
+
+    function previewWhatsAppScript(id) {
+      const lead = state.leads.find(l => l.id === id);
+      if (!lead) return;
+      const script = `Assalamualaikum & Salam Sejahtera ${lead.name},\n\nTerima kasih kerana berminat dengan ${lead.interest} di S'Antik Cafe (Anggaran Pakej: RM ${lead.value}).\n\nKami telah sediakan sebut harga & jadual slot untuk tarikh pilihan anda. Adakah anda mahu kami kunci slot tempahan ini hari ini?\n\nBalas mesej ini atau hubungi kami bila-bila masa. Terima kasih!`;
+      openDocModal(`Skrip Automasi WhatsApp — ${lead.name}`, script);
+    }
+
+    function handleAddLead(e) {
+      e.preventDefault();
+      const name = document.getElementById('lead-name').value.trim();
+      const phone = document.getElementById('lead-phone').value.trim();
+      const interest = document.getElementById('lead-interest').value.trim();
+      const value = parseFloat(document.getElementById('lead-value').value) || 0;
+      const stage = document.getElementById('lead-stage').value;
+
+      state.leads.unshift({
+        id: 'L' + Date.now(),
+        name,
+        phone,
+        interest,
+        value,
+        stage,
+        source: 'Manual / WhatsApp'
+      });
+      saveState();
+      closeModal('modal-lead');
+      e.target.reset();
+      renderAll();
+      showToast('Prospek baharu ditambah ke dalam Kuasa ARA!');
+    }
+
+    // =========================================================================
+    // KUASA HIRA: HR, ATTENDANCE, PAYROLL & ASK LIN
+    // =========================================================================
+    function renderHira() {
+      const tbody = document.getElementById('hira-staff-tbody');
+      tbody.innerHTML = state.staff.map(s => {
+        const p = calcPayroll(Number(s.basic));
+        return `
+          <tr class="hover:bg-slate-950/60">
+            <td class="py-3 px-2">
+              <div class="font-semibold text-white">${esc(s.name)}</div>
+              <div class="text-[11px] text-slate-400">${esc(s.role)}</div>
+            </td>
+            <td class="py-3 px-2">
+              <button type="button" onclick="toggleAttendance('${esc(s.id)}')" class="text-xs px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">
+                ${esc(s.status)}
+              </button>
+            </td>
+            <td class="py-3 px-2 text-slate-300">${s.leaveLeft} hari</td>
+            <td class="py-3 px-2 font-medium text-white">RM ${Number(s.basic).toFixed(2)}</td>
+            <td class="py-3 px-2 text-rose-300 text-xs">
+              -RM ${p.totalDeduction.toFixed(2)}
+              <div class="text-[10px] text-slate-500">KWSP: RM${p.epfEmployee.toFixed(0)} | SOCSO/EIS: RM${(p.socso+p.eis).toFixed(2)}</div>
+            </td>
+            <td class="py-3 px-2 font-bold text-emerald-400">RM ${p.netPay.toFixed(2)}</td>
+            <td class="py-3 px-2 text-right">
+              <button type="button" onclick="viewPayslip('${esc(s.id)}')" class="px-2.5 py-1 rounded-lg bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/30 text-xs font-medium">
+                Slip Gaji
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      const claimsEl = document.getElementById('hira-claims-list');
+      claimsEl.innerHTML = state.claims.map(c => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-2">
+          <div>
+            <div class="font-semibold text-white">${esc(c.staffName)} · <span class="text-amber-300">RM ${c.amount.toFixed(2)}</span></div>
+            <div class="text-[11px] text-slate-400">${esc(c.item)}</div>
+          </div>
+          ${c.status === 'Diluluskan'
+            ? `<span class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Diluluskan</span>`
+            : `<button type="button" onclick="approveClaim('${esc(c.id)}')" class="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-semibold text-xs">Luluskan</button>`
+          }
+        </div>
+      `).join('');
+    }
+
+    function toggleAttendance(id) {
+      const s = state.staff.find(x => x.id === id);
+      if (!s) return;
+      if (s.status.includes('Hadir')) {
+        s.status = 'Cuti Tahunan';
+      } else {
+        s.status = 'Hadir (08:55 AM)';
+      }
+      saveState();
+      renderAll();
+      showToast(`Kehadiran ${s.name} dikemas kini!`);
+    }
+
+    function approveClaim(id) {
+      const c = state.claims.find(x => x.id === id);
+      if (!c) return;
+      c.status = 'Diluluskan';
+      state.ledger.unshift({
+        id: uniqueId('CLM-', state.ledger),
+        party: c.staffName + ' (Tuntutan Staf)',
+        category: c.item,
+        type: 'EXPENSE',
+        amount: c.amount,
+        sst: 0,
+        status: 'Diluluskan HIRA'
+      });
+      saveState();
+      renderAll();
+      showToast(`Tuntutan RM${c.amount.toFixed(2)} diluluskan & direkod ke SAFA!`);
+    }
+
+    function viewPayslip(id) {
+      const s = state.staff.find(x => x.id === id);
+      if (!s) return;
+      const p = calcPayroll(Number(s.basic));
+      const slip = `=========================================\nSLIP GAJI RASMI — S'ANTIK CAFE (KUASA HIRA)\n=========================================\nNama Pekerja  : ${s.name}\nJawatan       : ${s.role}\nStatus        : ${s.status}\nBaki Cuti     : ${s.leaveLeft} Hari\n-----------------------------------------\nGaji Asas Bulanan          : RM ${Number(s.basic).toFixed(2)}\n\nPOTONGAN BERKANUN PEKERJA:\n- KWSP Pekerja (11%)       : RM ${p.epfEmployee.toFixed(2)}\n- PERKESO (SOCSO)          : RM ${p.socso.toFixed(2)}\n- Sistem Insurans (EIS)    : RM ${p.eis.toFixed(2)}\nJumlah Potongan            : RM ${p.totalDeduction.toFixed(2)}\n-----------------------------------------\nGAJI BERSIH DITERIMA       : RM ${p.netPay.toFixed(2)}\n=========================================\nCaruman KWSP Majikan (13%) : RM ${p.epfEmployer.toFixed(2)}\nDijana secara percuma tanpa watermark.`;
+      openDocModal(`Slip Gaji — ${s.name}`, slip);
+    }
+
+    function askLin(q) {
+      const lower = q.toLowerCase();
+      const box = document.getElementById('ask-lin-response');
+      if (lower.includes('cuti') || lower.includes('lewat') || lower.includes('hadir')) {
+        const cuti = state.staff.filter(s => s.status.toLowerCase().includes('cuti')).map(s => s.name);
+        const lewat = state.staff.filter(s => s.status.toLowerCase().includes('lewat')).map(s => s.name);
+        box.textContent = `Lin (HR AI): Staf yang sedang bercuti hari ini: ${cuti.length ? cuti.join(', ') : 'Tiada'}. Staf yang direkod lewat: ${lewat.length ? lewat.join(', ') : 'Tiada'}. Semua staf lain hadir mengikut jadual syif.`;
+      } else if (lower.includes('kwsp') || lower.includes('gaji')) {
+        let totalBasic = 0, totalNet = 0, totalEpfEmp = 0;
+        state.staff.forEach(s => {
+          const p = calcPayroll(Number(s.basic));
+          totalBasic += Number(s.basic);
+          totalNet += p.netPay;
+          totalEpfEmp += p.epfEmployee;
+        });
+        box.textContent = `Lin (HR AI): Jumlah Gaji Asas untuk ${state.staff.length} staf ialah RM ${totalBasic.toFixed(2)}. Jumlah potongan KWSP Pekerja (11%) ialah RM ${totalEpfEmp.toFixed(2)}, dan jumlah Gaji Bersih untuk dibayar ialah RM ${totalNet.toFixed(2)}.`;
+      } else {
+        const pending = state.claims.filter(c => c.status !== 'Diluluskan');
+        box.textContent = `Lin (HR AI): Terdapat ${pending.length} tuntutan staf yang masih menunggu kelulusan${pending.length ? ': ' + pending.map(c => c.staffName + ' (RM' + c.amount.toFixed(2) + ')').join(', ') : '.'}`;
+      }
+    }
+
+    function handleAskLinSubmit(e) {
+      e.preventDefault();
+      const inp = document.getElementById('ask-lin-input');
+      if (!inp.value.trim()) return;
+      askLin(inp.value.trim());
+      inp.value = '';
+    }
+
+    function handleAddStaff(e) {
+      e.preventDefault();
+      const name = document.getElementById('staff-name').value.trim();
+      const role = document.getElementById('staff-role').value.trim();
+      const basic = parseFloat(document.getElementById('staff-salary').value) || 1700;
+      const leaveLeft = parseInt(document.getElementById('staff-leave').value, 10) || 12;
+
+      state.staff.push({
+        id: 'S' + Date.now(),
+        name,
+        role,
+        status: 'Hadir (09:00 AM)',
+        leaveLeft,
+        basic
+      });
+      saveState();
+      closeModal('modal-staff');
+      e.target.reset();
+      renderAll();
+      showToast(`${name} berjaya ditambah ke dalam Kuasa HIRA!`);
+    }
+
+    // =========================================================================
+    // KUASA SAFA: ACCOUNTING, DIGITAL SHOEBOX & LHDN E-INVOICE
+    // =========================================================================
+    function simulateReceiptScan(party, amount, category, type, includeSST) {
+      document.getElementById('safa-type').value = type;
+      document.getElementById('safa-amount').value = amount.toFixed(2);
+      document.getElementById('safa-party').value = party;
+      document.getElementById('safa-category').value = category;
+      document.getElementById('safa-sst').value = includeSST ? 'YES' : 'NO';
+      showToast('📸 Digital Shoebox AI telah mengekstrak butiran resit! Klik Simpan untuk sahkan.');
+    }
+
+    function handleSafaSubmit(e) {
+      e.preventDefault();
+      const type = document.getElementById('safa-type').value;
+      const amount = parseFloat(document.getElementById('safa-amount').value) || 0;
+      const party = document.getElementById('safa-party').value.trim();
+      const category = document.getElementById('safa-category').value.trim();
+      const sstFlag = document.getElementById('safa-sst').value;
+      const sstAmount = sstFlag === 'YES' ? Math.round((amount - (amount / 1.06)) * 100) / 100 : 0;
+
+      const prefix = type === 'INCOME' ? 'INV-2026-' : 'BILL-2026-';
+      const refId = uniqueId(prefix, state.ledger);
+
+      state.ledger.unshift({
+        id: refId,
+        party,
+        category,
+        type,
+        amount,
+        sst: sstAmount,
+        status: type === 'INCOME' ? 'MyInvois Validated' : 'Resit Disahkan AI'
+      });
+      saveState();
+      e.target.reset();
+      renderAll();
+      showToast(`Rekod ${refId} disimpan & disahkan dalam SAFA!`);
+    }
+
+    function renderSafa() {
+      const tbody = document.getElementById('safa-ledger-tbody');
+      tbody.innerHTML = state.ledger.map(row => {
+        const isInc = row.type === 'INCOME';
+        return `
+          <tr class="hover:bg-slate-950/60">
+            <td class="py-3 px-2 font-mono text-xs text-slate-300">${esc(row.id)}</td>
+            <td class="py-3 px-2 font-medium text-white">${esc(row.party)}</td>
+            <td class="py-3 px-2 text-slate-400 text-xs">${esc(row.category)}</td>
+            <td class="py-3 px-2 font-bold ${isInc ? 'text-emerald-400' : 'text-rose-400'}">
+              ${isInc ? '+' : '-'}RM ${Number(row.amount).toFixed(2)}
+            </td>
+            <td class="py-3 px-2 text-slate-300 text-xs">RM ${Number(row.sst || 0).toFixed(2)}</td>
+            <td class="py-3 px-2">
+              <span class="text-[11px] px-2 py-0.5 rounded-full ${isInc ? 'bg-purple-500/15 text-purple-300 border border-purple-500/30' : 'bg-slate-800 text-slate-300'}">
+                ${esc(row.status)}
+              </span>
+            </td>
+            <td class="py-3 px-2 text-right">
+              <button type="button" onclick="viewEInvoice('${esc(row.id)}')" class="px-2.5 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-xs font-medium">
+                Lihat e-Invois
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function viewEInvoice(id) {
+      const item = state.ledger.find(x => x.id === id);
+      if (!item) return;
+      const subtotal = (Number(item.amount) - Number(item.sst || 0)).toFixed(2);
+      const doc = `================================================\nE-INVOIS LHDN MYINVOIS (KUASA SAFA FREE CLONE)\n================================================\nNo. Dokumen    : ${item.id}\nStatus LHDN    : ${item.status}\nUUID MyInvois  : MYINV-${item.id}-KANGAR-2026\nPembekal / TIN : S'Antik Cafe (TIN: C25849102090)\nPelanggan/Pihak: ${item.party}\nKategori       : ${item.category}\n------------------------------------------------\nJumlah Sebelum Cukai : RM ${subtotal}\nCukai SST (6%)       : RM ${Number(item.sst || 0).toFixed(2)}\nJUMLAH KESELURUHAN   : RM ${Number(item.amount).toFixed(2)}\n================================================\nJSON Payload LHDN MyInvois:\n${JSON.stringify({
+        invoiceId: item.id,
+        supplierTIN: 'C25849102090',
+        party: item.party,
+        category: item.category,
+        totalPayable: item.amount,
+        sstTax: item.sst,
+        validationStatus: item.status
+      }, null, 2)}`;
+      openDocModal(`e-Invois LHDN — ${item.id}`, doc);
+    }
+
+    // =========================================================================
+    // MODALS, CSV EXPORT & RESET
+    // =========================================================================
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('hidden');
+    }
+
+    function openDocModal(title, body) {
+      document.getElementById('modal-doc-title').textContent = title;
+      document.getElementById('modal-doc-body').textContent = body;
+      openModal('modal-doc');
+    }
+
+    function copyModalDocText() {
+      const text = document.getElementById('modal-doc-body').textContent;
+      copyTextSafe(text, 'Dokumen berjaya disalin!');
+    }
+
+    function exportAllDataCSV() {
+      const rows = [
+        ['MODUL', 'ID', 'NAMA_ATAU_PIHAK', 'KATEGORI_ATAU_JAWATAN', 'NILAI_RM', 'STATUS']
+      ];
+      state.leads.forEach(l => rows.push(['ARA_CRM', l.id, l.name, l.interest, l.value, l.stage]));
+      state.staff.forEach(s => rows.push(['HIRA_HR', s.id, s.name, s.role, s.basic, s.status]));
+      state.ledger.forEach(x => rows.push(['SAFA_' + x.type, x.id, x.party, x.category, x.amount, x.status]));
+
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'kuasa_os_free_santik_backup.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('⬇️ Fail CSV berjaya dimuat turun tanpa sekatan!');
+    }
+
+    // =========================================================================
+    // 2B: CONTENT CALENDAR FUNCTIONS (KUASA ARA)
+    // =========================================================================
+    function renderContentCalendar() {
+      const tbody = document.getElementById('ara-calendar-tbody');
+      if (!tbody) return;
+      const list = state.contentCalendar || [];
+      tbody.innerHTML = list.map(item => {
+        const badge = item.status === 'Telah Dipost'
+          ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'
+          : item.status === 'Siap Dirakam'
+          ? 'bg-sky-500/15 text-sky-300 border-sky-500/30'
+          : 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+        return `
+          <tr class="hover:bg-slate-950/60">
+            <td class="py-2.5 px-2 font-semibold text-white whitespace-nowrap">${esc(item.day)}</td>
+            <td class="py-2.5 px-2 text-xs text-sky-300">${esc(item.format)}</td>
+            <td class="py-2.5 px-2 font-medium text-slate-100">${esc(item.hook)}</td>
+            <td class="py-2.5 px-2 text-xs text-slate-400">${esc(item.visual)}</td>
+            <td class="py-2.5 px-2">
+              <button type="button" onclick="cycleContentStatus('${esc(item.id)}')" class="text-[11px] px-2 py-0.5 rounded-full border ${badge}">
+                ${esc(item.status)}
+              </button>
+            </td>
+            <td class="py-2.5 px-2 text-right">
+              <button type="button" onclick="useCalendarInMagicAds('${esc(item.id)}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-sky-300 text-xs border border-slate-700">
+                Jana Copy Iklan
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function cycleContentStatus(id) {
+      const order = ['Dirancang', 'Siap Dirakam', 'Telah Dipost'];
+      const slot = (state.contentCalendar || []).find(x => x.id === id);
+      if (!slot) return;
+      slot.status = order[(order.indexOf(slot.status) + 1) % order.length];
+      saveState();
+      renderContentCalendar();
+      showToast('Status konten dikemas kini: ' + slot.status);
+    }
+
+    function useCalendarInMagicAds(id) {
+      const slot = (state.contentCalendar || []).find(x => x.id === id);
+      if (!slot) return;
+      document.getElementById('ara-product').value = slot.hook;
+      generateMagicAds();
+      showToast('Tajuk konten dimasukkan ke dalam Magic Ads!');
+    }
+
+    function regenerateContentCalendar() {
+      const ideas = [
+        { id: 'CAL-A1', day: 'Isnin · 9:00 AM', format: 'IG Reels / TikTok (9:16)', hook: 'POV: Pagi Isnin Lebih Tenang Dengan Kopi Kampung Caramel S\'Antik', visual: 'Slow-motion tuang susu atas ais & senyuman barista', status: 'Dirancang' },
+        { id: 'CAL-A2', day: 'Selasa · 1:00 PM', format: 'Poster Promosi FB/IG (4:5)', hook: 'Set Lunch & Kopi Percuma Untuk Geng Pejabat Kangar', visual: 'Foto jelas Nasi Lemak Ayam Berempah + Kopi Ais', status: 'Dirancang' },
+        { id: 'CAL-A3', day: 'Rabu · 4:30 PM', format: 'IG Reels / TikTok (9:16)', hook: 'Bunyi Kerangupan Croissant Butter Panas Baru Keluar Oven!', visual: 'Close-up koyak croissant berasap + sapuan mentega', status: 'Siap Dirakam' },
+        { id: 'CAL-A4', day: 'Khamis · 8:00 PM', format: 'Threads Storytelling', hook: '3 Perkara Kami Belajar Selepas Layan 1,000+ Pelanggan Kafe', visual: 'Foto suasana malam klasik S\'Antik Cafe', status: 'Dirancang' },
+        { id: 'CAL-A5', day: 'Jumaat · 3:00 PM', format: 'WhatsApp Status / Broadcast', hook: 'Baucar Diskaun RM5 Khas Pelanggan Tetap Hujung Minggu Ini', visual: 'Poster kupon digital ringkas + link WhatsApp', status: 'Siap Dirakam' },
+        { id: 'CAL-A6', day: 'Sabtu · 5:00 PM', format: 'IG Reels / TikTok (9:16)', hook: 'Port Lepak Keluarga & Kawan-Kawan Paling Cozy di Perlis', visual: 'Montaj pelanggan bergelak ketawa & hidangan meja penuh', status: 'Dirancang' },
+        { id: 'CAL-A7', day: 'Ahad · 9:00 PM', format: 'Poster Promosi FB/IG (4:5)', hook: 'Tempahan Katering & Acara VIP Minggu Depan Kini Dibuka', visual: 'Susunan meja Hi-Tea eksklusif S\'Antik Cafe', status: 'Dirancang' }
+      ];
+      state.contentCalendar = ideas;
+      saveState();
+      renderContentCalendar();
+      showToast('✨ 7 idea konten mingguan baharu telah dijana!');
+    }
+
+    function handleAddContentSlot(e) {
+      e.preventDefault();
+      state.contentCalendar = state.contentCalendar || [];
+      state.contentCalendar.push({
+        id: 'CAL-' + Date.now(),
+        day: document.getElementById('cal-day').value.trim(),
+        format: document.getElementById('cal-format').value,
+        hook: document.getElementById('cal-hook').value.trim(),
+        visual: document.getElementById('cal-visual').value.trim(),
+        status: 'Dirancang'
+      });
+      saveState();
+      closeModal('modal-content');
+      e.target.reset();
+      renderContentCalendar();
+      showToast('Slot konten baharu ditambah!');
+    }
+
+    // =========================================================================
+    // 1A: POS & MENU S'ANTIK CAFE FUNCTIONS
+    // =========================================================================
+    function renderPos() {
+      const grid = document.getElementById('pos-menu-grid');
+      if (!grid) return;
+      grid.innerHTML = (state.posMenu || []).map(item => `
+        <button type="button" onclick="addToPosCart('${esc(item.id)}')" class="bg-slate-950 hover:bg-slate-800/90 border border-slate-800 hover:border-emerald-500/50 rounded-xl p-3.5 text-left transition flex flex-col justify-between gap-2">
+          <div>
+            <span class="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-800">${esc(item.category)}</span>
+            <div class="font-bold text-sm text-white mt-1.5">${esc(item.name)}</div>
+          </div>
+          <div class="flex items-center justify-between w-full pt-1">
+            <span class="font-extrabold text-emerald-400 text-sm">RM ${Number(item.price).toFixed(2)}</span>
+            <span class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-lg">+ Bakul</span>
+          </div>
+        </button>
+      `).join('');
+
+      const cartEl = document.getElementById('pos-cart-items');
+      const cart = state.posCart || [];
+      if (!cart.length) {
+        cartEl.innerHTML = `<div class="text-xs text-slate-500 text-center py-6">Bakul pesanan kosong. Klik menu di sebelah kiri.</div>`;
+      } else {
+        cartEl.innerHTML = cart.map(c => `
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between gap-2">
+            <div>
+              <div class="text-xs font-semibold text-white">${esc(c.name)}</div>
+              <div class="text-[11px] text-slate-400">RM ${Number(c.price).toFixed(2)} × ${c.qty} = <strong class="text-emerald-400">RM ${(c.price * c.qty).toFixed(2)}</strong></div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="changePosQty('${esc(c.id)}', -1)" class="w-9 h-9 rounded-lg bg-slate-800 text-white text-base">-</button>
+              <span class="text-xs font-bold px-1.5">${c.qty}</span>
+              <button type="button" onclick="changePosQty('${esc(c.id)}', 1)" class="w-9 h-9 rounded-lg bg-slate-800 text-white text-base">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      const subtotal = cart.reduce((s, c) => s + (Number(c.price) * Number(c.qty)), 0);
+      const sst = Math.round(subtotal * 0.06 * 100) / 100;
+      const total = Math.round((subtotal + sst) * 100) / 100;
+      document.getElementById('pos-subtotal').textContent = 'RM ' + subtotal.toFixed(2);
+      document.getElementById('pos-sst').textContent = 'RM ' + sst.toFixed(2);
+      document.getElementById('pos-total').textContent = 'RM ' + total.toFixed(2);
+    }
+
+    function addToPosCart(menuId) {
+      const item = (state.posMenu || []).find(m => m.id === menuId);
+      if (!item) return;
+      state.posCart = state.posCart || [];
+      const existing = state.posCart.find(c => c.id === menuId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        state.posCart.push({ id: item.id, name: item.name, price: Number(item.price), qty: 1, stockId: item.stockId || 'INV1' });
+      }
+      saveState();
+      renderPos();
+    }
+
+    function changePosQty(menuId, delta) {
+      state.posCart = state.posCart || [];
+      const idx = state.posCart.findIndex(c => c.id === menuId);
+      if (idx === -1) return;
+      state.posCart[idx].qty += delta;
+      if (state.posCart[idx].qty <= 0) {
+        state.posCart.splice(idx, 1);
+      }
+      saveState();
+      renderPos();
+    }
+
+    function clearPosCart() {
+      state.posCart = [];
+      saveState();
+      renderPos();
+      showToast('Bakul pesanan dikosongkan.');
+    }
+
+    function checkoutPosOrder() {
+      const cart = state.posCart || [];
+      if (!cart.length) {
+        showToast('Sila pilih sekurang-kurangnya 1 menu dahulu!');
+        return;
+      }
+      const table = document.getElementById('pos-table').value;
+      const payMethod = document.getElementById('pos-payment').value;
+      const subtotal = cart.reduce((s, c) => s + (Number(c.price) * Number(c.qty)), 0);
+      const sst = Math.round(subtotal * 0.06 * 100) / 100;
+      const total = Math.round((subtotal + sst) * 100) / 100;
+      const orderId = uniqueId('POS-2026-', state.ledger);
+
+      // 1. Add to SAFA Ledger
+      state.ledger.unshift({
+        id: orderId,
+        party: `${table} · ${payMethod}`,
+        category: 'Jualan POS S\'Antik Cafe',
+        type: 'INCOME',
+        amount: total,
+        sst: sst,
+        status: 'MyInvois Validated'
+      });
+
+      // 2. Deduct from Inventory
+      cart.forEach(c => {
+        const inv = (state.inventory || []).find(i => i.id === c.stockId);
+        if (inv && inv.qty > 0) {
+          inv.qty = Math.max(0, Number((inv.qty - (0.2 * c.qty)).toFixed(1)));
+        }
+      });
+
+      const receiptLines = cart.map(c => `- ${c.name} x${c.qty} : RM ${(c.price * c.qty).toFixed(2)}`).join('\n');
+      state.posCart = [];
+      saveState();
+      renderAll();
+
+      openDocModal(
+        `Resit POS & e-Invois — ${orderId}`,
+        `=========================================\nRESIT RASMI POS — S'ANTIK CAFE (KANGAR)\n=========================================\nNo. Pesanan : ${orderId}\nMeja/Jenis  : ${table}\nBayaran     : ${payMethod}\n-----------------------------------------\n${receiptLines}\n-----------------------------------------\nSubjumlah   : RM ${subtotal.toFixed(2)}\nSST (6%)    : RM ${sst.toFixed(2)}\nJUMLAH      : RM ${total.toFixed(2)}\n=========================================\nStatus: Direkod ke Lejar SAFA & Stok Dapur dikemas kini.`
+      );
+      showToast(`Pesanan ${orderId} (RM ${total.toFixed(2)}) berjaya masuk ke SAFA!`);
+    }
+
+    function handleAddMenuItem(e) {
+      e.preventDefault();
+      state.posMenu = state.posMenu || [];
+      state.posMenu.push({
+        id: 'M' + Date.now(),
+        name: document.getElementById('menu-name').value.trim(),
+        category: document.getElementById('menu-category').value,
+        price: parseFloat(document.getElementById('menu-price').value) || 10.00,
+        stockId: 'INV1'
+      });
+      saveState();
+      closeModal('modal-menu');
+      e.target.reset();
+      renderPos();
+      showToast('Menu baharu ditambah ke POS!');
+    }
+
+    // =========================================================================
+    // 1B: INVENTORI & STOK DAPUR FUNCTIONS
+    // =========================================================================
+    function renderInventory() {
+      const tbody = document.getElementById('inv-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = (state.inventory || []).map(item => {
+        const isLow = Number(item.qty) <= Number(item.minQty);
+        return `
+          <tr class="hover:bg-slate-950/60">
+            <td class="py-3 px-2 font-semibold text-white">${esc(item.name)}</td>
+            <td class="py-3 px-2 text-xs text-slate-400">${esc(item.category)}</td>
+            <td class="py-3 px-2 font-bold ${isLow ? 'text-rose-400' : 'text-emerald-400'}">${item.qty} unit</td>
+            <td class="py-3 px-2 text-slate-400">${item.minQty} unit</td>
+            <td class="py-3 px-2 text-slate-300">RM ${Number(item.restockCost).toFixed(2)}</td>
+            <td class="py-3 px-2">
+              <span class="text-[11px] px-2 py-0.5 rounded-full border ${isLow ? 'bg-rose-500/15 text-rose-300 border-rose-500/30 font-semibold' : 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30'}">
+                ${isLow ? '⚠️ Stok Rendah' : '✓ Stok Cukup'}
+              </span>
+            </td>
+            <td class="py-3 px-2 text-right space-x-1">
+              <button type="button" onclick="adjustInventory('${esc(item.id)}', -1)" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs">-1 Guna</button>
+              <button type="button" onclick="restockInventoryAndRecordSAFA('${esc(item.id)}')" class="px-2.5 py-1 rounded bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 border border-amber-400/30 text-xs font-medium">
+                + Restock (+5 &amp; Rekod SAFA)
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function adjustInventory(id, delta) {
+      const item = (state.inventory || []).find(i => i.id === id);
+      if (!item) return;
+      item.qty = Math.max(0, Number((Number(item.qty) + delta).toFixed(1)));
+      saveState();
+      renderAll();
+      showToast(`Baki stok ${item.name} dikemas kini: ${item.qty} unit`);
+    }
+
+    function restockInventoryAndRecordSAFA(id) {
+      const item = (state.inventory || []).find(i => i.id === id);
+      if (!item) return;
+      item.qty = Number((Number(item.qty) + 5).toFixed(1));
+      const billId = uniqueId('RSTK-', state.ledger);
+      state.ledger.unshift({
+        id: billId,
+        party: 'Restock Inventori: ' + item.name,
+        category: 'Belian Stok Dapur (' + item.category + ')',
+        type: 'EXPENSE',
+        amount: Number(item.restockCost),
+        sst: 0,
+        status: 'Resit Disahkan AI'
+      });
+      saveState();
+      renderAll();
+      showToast(`Stok +5 ditambah & kos RM${Number(item.restockCost).toFixed(2)} direkod ke SAFA!`);
+    }
+
+    function handleAddInventory(e) {
+      e.preventDefault();
+      state.inventory = state.inventory || [];
+      state.inventory.push({
+        id: 'INV' + Date.now(),
+        name: document.getElementById('inv-name').value.trim(),
+        category: 'Stok Dapur & Bar',
+        qty: parseFloat(document.getElementById('inv-qty').value) || 5,
+        minQty: parseFloat(document.getElementById('inv-min').value) || 3,
+        restockCost: parseFloat(document.getElementById('inv-cost').value) || 100
+      });
+      saveState();
+      closeModal('modal-inv');
+      e.target.reset();
+      renderAll();
+      showToast('Item inventori baharu disimpan!');
+    }
+
+    // =========================================================================
+    // 1C: KALENDAR TEMPAHAN KATERING & ACARA VIP FUNCTIONS
+    // =========================================================================
+    function renderBookings() {
+      const grid = document.getElementById('booking-cards-grid');
+      if (!grid) return;
+      grid.innerHTML = (state.bookings || []).map(b => `
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-3">
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-emerald-400">${esc(b.date)}</span>
+              <span class="text-[11px] px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30">${esc(b.status)}</span>
+            </div>
+            <div class="font-bold text-sm text-white">${esc(b.client)}</div>
+            <div class="text-xs text-slate-300">${esc(b.package)} · <strong>${b.pax} Pax</strong></div>
+            <div class="text-sm font-extrabold text-emerald-400">RM ${Number(b.amount).toLocaleString('en-MY', { minimumFractionDigits: 2 })}</div>
+          </div>
+          <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-800/80">
+            ${b.invoiced
+              ? `<span class="text-xs text-emerald-400 font-medium">✓ Sudah Masuk Lejar SAFA</span>`
+              : `<button type="button" onclick="invoiceBookingToSAFA('${esc(b.id)}')" class="px-3 py-1.5 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 text-xs font-medium">
+                  🧾 Jana e-Invois ke SAFA
+                </button>`
+            }
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function syncQualifiedLeadsToBookings() {
+      const qual = (state.leads || []).filter(l => l.stage === 'Qualified');
+      let added = 0;
+      qual.forEach(l => {
+        const exists = (state.bookings || []).some(b => b.client === l.name);
+        if (!exists) {
+          state.bookings.unshift({
+            id: uniqueId('BK-', state.bookings),
+            client: l.name,
+            date: 'Minggu Hadapan · 3:00 PM',
+            pax: 40,
+            package: l.interest,
+            amount: Number(l.value),
+            status: 'Dari Prospek ARA',
+            invoiced: false
+          });
+          added++;
+        }
+      });
+      saveState();
+      renderAll();
+      showToast(added ? `${added} prospek Qualified berjaya ditarik ke Kalendar Katering!` : 'Semua prospek Qualified sudah berada dalam Kalendar Katering.');
+    }
+
+    function invoiceBookingToSAFA(id) {
+      const b = (state.bookings || []).find(x => x.id === id);
+      if (!b || b.invoiced) return;
+      b.invoiced = true;
+      b.status = 'Selesai & Diinvois';
+      const sst = Math.round((Number(b.amount) - (Number(b.amount) / 1.06)) * 100) / 100;
+      const invId = uniqueId('INV-VIP-', state.ledger);
+      state.ledger.unshift({
+        id: invId,
+        party: b.client,
+        category: 'Katering & Acara VIP (' + b.package + ')',
+        type: 'INCOME',
+        amount: Number(b.amount),
+        sst: sst,
+        status: 'MyInvois Validated'
+      });
+      saveState();
+      renderAll();
+      showToast(`Invois ${invId} (RM${b.amount}) berjaya dihantar ke lejar SAFA!`);
+    }
+
+    function handleAddBooking(e) {
+      e.preventDefault();
+      state.bookings = state.bookings || [];
+      state.bookings.unshift({
+        id: uniqueId('BK-', state.bookings),
+        client: document.getElementById('bk-client').value.trim(),
+        date: document.getElementById('bk-date').value.trim(),
+        pax: parseInt(document.getElementById('bk-pax').value, 10) || 30,
+        package: document.getElementById('bk-package').value.trim(),
+        amount: parseFloat(document.getElementById('bk-amount').value) || 500,
+        status: 'Disahkan',
+        invoiced: false
+      });
+      saveState();
+      closeModal('modal-booking');
+      e.target.reset();
+      renderAll();
+      showToast('Tempahan katering/VIP baharu disimpan!');
+    }
+
+    // =========================================================================
+    // 3B: GOOGLE SHEETS CLOUD DATABASE SYNC FUNCTIONS
+    // =========================================================================
+    function openGoogleSheetsModal() {
+      const urlInput = document.getElementById('gsheet-webhook-url');
+      if (urlInput) urlInput.value = state.gsheetWebhookUrl || '';
+      openModal('modal-gsheet');
+    }
+
+    function copyGoogleAppsScript() {
+      const code = document.getElementById('gsheet-script-code').textContent;
+      copyTextSafe(code, 'Kod Google Apps Script berjaya disalin!');
+    }
+
+    function syncToGoogleSheetsNow() {
+      const url = document.getElementById('gsheet-webhook-url').value.trim();
+      const statusEl = document.getElementById('gsheet-sync-status');
+      state.gsheetWebhookUrl = url;
+      saveState();
+      if (!url) {
+        statusEl.textContent = '⚠️ Sila masukkan URL Web App Google Apps Script anda dahulu, atau klik Muat Turun Backup JSON.';
+        showToast('Masukkan URL Google Apps Script dahulu.');
+        return;
+      }
+      statusEl.textContent = '⏳ Sedang menghantar semua 7 jadual ke Google Sheets...';
+      fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(state)
+      }).then(() => {
+        statusEl.textContent = '✅ Berjaya dihantar ke Google Sheets pada ' + new Date().toLocaleTimeString('ms-MY') + '!';
+        showToast('☁️ Data berjaya di-sync ke Google Sheets!');
+      }).catch(() => {
+        statusEl.textContent = '⚠️ Tidak dapat menghubungi URL dalam mod sandbox; sila gunakan eksport CSV/JSON.';
+      });
+    }
+
+    function exportFullJSONBackup() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'santik_kuasa_os_cloud_backup.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('💾 Backup JSON penuh berjaya dimuat turun!');
+    }
+
+    // =========================================================================
+    // 3C: OFFICIAL MONTHLY PRINTABLE / PDF REPORT FUNCTIONS
+    // =========================================================================
+    function openMonthlyReportModal() {
+      const m = computeMetrics();
+      const lowStock = (state.inventory || []).filter(i => Number(i.qty) <= Number(i.minQty));
+      const reportEl = document.getElementById('monthly-report-content');
+      reportEl.innerHTML = `
+        <div class="border-b border-slate-800 pb-3 flex flex-wrap justify-between items-start gap-2">
+          <div>
+            <h4 class="text-base font-extrabold text-white">LAPORAN KEWANGAN, CUKAI &amp; OPERASI BULANAN — S'ANTIK CAFE</h4>
+            <p class="text-xs text-slate-400">Lokasi: Kangar, Perlis · Dijana oleh KuasaOS Free Edition (One Memory)</p>
+          </div>
+          <span class="text-xs font-mono px-2.5 py-1 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Status Audit: Sedia LHDN &amp; KWSP</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-2">
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="text-[11px] text-slate-400">Jumlah Jualan Kasar (SAFA/POS)</div>
+            <div class="text-base font-bold text-emerald-400">RM ${m.totalIncome.toFixed(2)}</div>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="text-[11px] text-slate-400">Perbelanjaan Resit &amp; Stok</div>
+            <div class="text-base font-bold text-rose-400">RM ${m.totalExpense.toFixed(2)}</div>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="text-[11px] text-slate-400">Gaji Asas Staf (HIRA)</div>
+            <div class="text-base font-bold text-amber-300">RM ${m.totalPayroll.toFixed(2)}</div>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
+            <div class="text-[11px] text-slate-400">Untung Bersih Bulanan</div>
+            <div class="text-base font-bold text-white">RM ${m.netProfit.toFixed(2)}</div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <div class="font-bold text-xs uppercase tracking-wider text-purple-300">1. Ringkasan e-Invois LHDN MyInvois &amp; SST (6%)</div>
+          <p class="text-xs text-slate-300">• Bilangan Invois Disahkan LHDN: <strong>${m.validatedInvoices} dokumen</strong> | Anggaran Cukai SST (6%) Terkumpul: <strong>RM ${m.totalSST.toFixed(2)}</strong></p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="font-bold text-xs uppercase tracking-wider text-amber-300">2. Ringkasan Gaji Berkanun Pasukan (${state.staff.length} Staf)</div>
+          <p class="text-xs text-slate-300">• Jumlah Gaji Asas: RM ${m.totalPayroll.toFixed(2)} | Caruman KWSP Pekerja (11%): RM ${(m.totalPayroll * 0.11).toFixed(2)} | Caruman KWSP Majikan (13%): RM ${(m.totalPayroll * 0.13).toFixed(2)}</p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="font-bold text-xs uppercase tracking-wider text-sky-300">3. Status Inventori Dapur &amp; Tempahan Katering VIP</div>
+          <p class="text-xs text-slate-300">• Item Stok Rendah Perlu Restock: <strong>${lowStock.length ? lowStock.map(i => i.name).join(', ') : 'Semua stok mencukupi'}</strong></p>
+          <p class="text-xs text-slate-300">• Tempahan Katering &amp; VIP Aktif: <strong>${(state.bookings || []).length} acara</strong> | Nilai Pipeline Prospek ARA: <strong>RM ${m.pipelineValue.toFixed(2)}</strong></p>
+        </div>
+      `;
+      openModal('modal-monthly-report');
+    }
+
+    function copyMonthlyReportText() {
+      const el = document.getElementById('monthly-report-content');
+      if (el) copyTextSafe(el.innerText, 'Laporan bulanan rasmi berjaya disalin!');
+    }
+
+    function resetDemoData() {
+      if (!confirm('Padam SEMUA data anda dan kembali ke data demo? Tindakan ini tidak boleh dibatalkan.')) return;
+      state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+      saveState();
+      renderAll();
+      generateMagicAds();
+      showToast('Data demo telah diset semula.');
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderAll();
+      generateMagicAds();
+    });
+  </script>
+</body>
+</html>
